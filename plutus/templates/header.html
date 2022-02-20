@@ -36,7 +36,7 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-bag"></i>&nbsp;แบรนด์ที่ติดตาม</a></li>
+                    <li><a class="dropdown-item" href="{% url 'brands:followed_brand_list' %}"><i class="bi bi-bag"></i>&nbsp;แบรนด์ที่ติดตาม</a></li>
                     <li><a class="dropdown-item" href="#"><i class="bi bi-cart4"></i>&nbsp;รายการคำสั่งซื้อ</a></li>
                     <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person-circle"></i>&nbsp;บัญชี</a></li>
                     <li>
@@ -66,16 +66,16 @@
         <div class="d-flex flex-wrap align-items-center justify-content-center ">
             <ul class="nav col-12 justify-content-center pt-1">
                 <li>
-                    <a href="#" class="btn btn-outline-dark mb-1 {% if page == 'all_deals' %}active{% endif %}">
+                    <a href="{% url 'promotions:all_deals' %}" class="btn btn-outline-dark mb-1 {% if title == 'ALL DEALS!' %}active{% endif %}">
                         <i class="bi bi-cart-fill"></i><span style="font-size: 0.8rem;">&nbsp;All Deals</span>
                     </a>
-                    <a href="#" class="btn btn-outline-dark mb-1 {% if page == 'flash_deals' %}active{% endif %}">
+                    <a href="#" class="btn btn-outline-dark mb-1 {% if title == 'flash_deals' %}active{% endif %}">
                         <i class="bi bi-lightning-fill"></i><span style="font-size: 0.8rem;">&nbsp;Flash Deals</span>
                     </a>
-                    <a href="#" class="btn btn-outline-dark mb-1 {% if page == 'brands' %}active{% endif %}">
+                    <a href="{% url 'brands:brand_list' %}" class="btn btn-outline-dark mb-1 {% if title == 'BRANDS!' %}active{% endif %}">
                         <i class="bi bi-bag-fill"></i><span style="font-size: 0.8rem;">&nbsp;Brands</span>
                     </a>
-                    <a href="#" class="btn btn-outline-dark mb-1 {% if page == 'categories' %}active{% endif %}">
+                    <a href="#" class="btn btn-outline-dark mb-1 {% if title == 'categories' %}active{% endif %}">
                         <i class="bi bi-bag-fill"></i><span style="font-size: 0.8rem;">&nbsp;Categories</span>
                     </a>
                 </li>
