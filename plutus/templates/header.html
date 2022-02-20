@@ -1,0 +1,85 @@
+{% load static %}
+
+<!-- header 1 -->
+<div class="border-bottom py-2 bg-light">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a class="navbar-brand me-auto" href="{% url 'promotions:all_deals' %}">
+                <img src="{% static 'img/plutus_logo.png' %}" alt="" width="100px">
+            </a>
+
+            {% if user.is_authenticated %}
+            <button class="btn position-relative border rounded-circle ms-2" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                <i class="bi bi-bell"></i>
+                <span
+                    class="position-absolute top-0 start-100 bg-danger translate-middle badge rounded-pill bg-secondary"
+                    style="font-size: 0.6rem; margin-top: 15%;">+99
+                </span>
+            </button>
+
+            <div class="dropdown text-end ms-4">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if request.user.profile.image %}
+                    <img src="{{request.user.profile.image.url}}" alt="" width="32" height="32"
+                        class="rounded-circle border" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'img/default_avatar.png' %}" alt="" width="32" height="32"
+                        class="rounded-circle border" style="object-fit: cover;">
+                    {% endif %}
+                </a>
+
+                <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                    <li><a class="dropdown-item" href="#"><i
+                                class="bi bi-journal-medical"></i>&nbsp;โปรโมชั่นที่สร้าง</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-bag"></i>&nbsp;แบรนด์ที่ติดตาม</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-cart4"></i>&nbsp;รายการคำสั่งซื้อ</a></li>
+                    <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person-circle"></i>&nbsp;บัญชี</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{% url 'accounts:logout' %}"><i
+                                class="bi bi-box-arrow-right"></i>&nbsp;ลงชื่อออก</a>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+            <div>
+                <a href="{% url 'accounts:login' %}" class="ms-2 btn btn-outline-dark"
+                    style="font-size: 0.9rem;">เข้าสู่ระบบ</a>
+                <a href="{% url 'accounts:register' %}" class="ms-2 btn btn-outline-dark" style="font-size: 0.9rem;">สมัครสมาชิก</a>
+            </div>
+            {% endif %}
+
+
+        </div>
+    </div>
+</div>
+
+<!-- header 2 -->
+<div class="border-bottom bg-light">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center ">
+            <ul class="nav col-12 justify-content-center pt-1">
+                <li>
+                    <a href="#" class="btn btn-outline-dark mb-1 {% if page == 'all_deals' %}active{% endif %}">
+                        <i class="bi bi-cart-fill"></i><span style="font-size: 0.8rem;">&nbsp;All Deals</span>
+                    </a>
+                    <a href="#" class="btn btn-outline-dark mb-1 {% if page == 'flash_deals' %}active{% endif %}">
+                        <i class="bi bi-lightning-fill"></i><span style="font-size: 0.8rem;">&nbsp;Flash Deals</span>
+                    </a>
+                    <a href="#" class="btn btn-outline-dark mb-1 {% if page == 'brands' %}active{% endif %}">
+                        <i class="bi bi-bag-fill"></i><span style="font-size: 0.8rem;">&nbsp;Brands</span>
+                    </a>
+                    <a href="#" class="btn btn-outline-dark mb-1 {% if page == 'categories' %}active{% endif %}">
+                        <i class="bi bi-bag-fill"></i><span style="font-size: 0.8rem;">&nbsp;Categories</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

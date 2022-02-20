@@ -1,0 +1,25 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">การแจ้งเตือน</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col text-start">เร็ว ๆ นี้</div>
+            <a href="#" class="col text-end">ดูทั้งหมด</a>
+        </div>
+        
+        {% for i in '0123456789'|make_list %}
+        <div class="card mt-2">
+            <div class="card-body">
+                <h5 class="card-title">ซื้อ 2 แถม 1</h5>
+                <p class="card-text">
+                    โปรโมชั่นของคุณถูกอนุมัติเรียบร้อยแล้ว
+                </p>
+                <a href="#" class="btn stretched-link">32 ธันวาคม 2565</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>

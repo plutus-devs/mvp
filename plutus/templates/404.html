@@ -1,0 +1,17 @@
+{% extends 'plutus/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>ขออภัยไม่พบหน้านี้</title>
+{% endblock %}
+
+
+{% block searchbar %}
+{% endblock searchbar %}
+
+{% block content %}
+<div class="mt-5 text-center">
+    <h3>ขออภัยไม่พบหน้านี้</h3>
+    <a href="{% url 'promotions:all_deals' %}" class="btn btn-lg btn-outline-dark">คลิกปุ่มนี้เพื่อกลับหน้าหลัก</a>
+</div>
+{% endblock content %}
