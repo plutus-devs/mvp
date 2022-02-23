@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block search_bar %}
+{% endblock search_bar %}
+
+{% block content %}
+
+{% include 'carousel.html' %}
+
+<!-- Category List -->
+<div class="container-fluid mt-2">
+    <h3 class="mb-3">{{title}}</h3>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+
+        <div class="col">
+            <div class="card">
+                <a href="{% url 'promotions:all_deals' %}">
+                    <img src="{% static 'img/all_cates.jpeg' %}" class="card-img-top" alt="ทั้งหมด">
+
+                    <div class="card-img-overlay">
+                        <h2 class="card-title text-end text-dark">ทั้งหมด</h2>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        {% for cate in category_list %}
+        <div class="col">
+            <div class="card">
+                <a href="#">
+                    <img src="{{cate.image_url}}" class="card-img-top" alt="{{cate.name}}">
+
+                    <div class="card-img-overlay">
+                        <h2 class="card-title text-end text-dark">{{cate.name}}</h2>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock content %}

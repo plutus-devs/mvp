@@ -11,7 +11,7 @@ def brand_list_view(request):
 
     # CAROUSEL
     carousel_qs = BrandImage.objects.order_by("?")[:4].all()
-    carousel_list = [ img.image.url for img in carousel_qs ]
+    carousel_list = [img.image.url for img in carousel_qs]
     context["carousel_list"] = carousel_list
 
     # BRANDS
@@ -44,7 +44,7 @@ def follow_brand_view(request, pk):
     brand = Brand.objects.filter(pk=pk).first()
     if brand is None:
         raise Http404
-    
+
     brand.users.add(request.user)
     return redirect(request.META.get("HTTP_REFERER", "/"))
 
@@ -58,10 +58,6 @@ def unfollow_brand_view(request, pk):
     return redirect(request.META.get("HTTP_REFERER", "/"))
 
 
-def brand_feed_view(request, pk):
-    pass
-
-
 @login_required
 def followed_brand_list_view(request):
     template_name = "brands/brand_list.html"
@@ -69,7 +65,7 @@ def followed_brand_list_view(request):
 
     # CAROUSEL
     carousel_qs = BrandImage.objects.order_by("?")[:4].all()
-    carousel_list = [ img.image.url for img in carousel_qs ]
+    carousel_list = [img.image.url for img in carousel_qs]
     context["carousel_list"] = carousel_list
 
     # BRANDS
@@ -93,3 +89,7 @@ def followed_brand_list_view(request):
     context["brand_list"] = brand_list
 
     return render(request, template_name, context)
+
+
+def brand_feed_view(request, pk):
+    pass

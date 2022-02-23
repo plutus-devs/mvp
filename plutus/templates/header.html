@@ -31,9 +31,12 @@
                 </a>
 
                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="#"><i
-                                class="bi bi-journal-medical"></i>&nbsp;โปรโมชั่นที่สร้าง</a></li>
+                    <li><a class="dropdown-item" href="{% url 'promotions:create_promotion' %}"><i
+                                class="bi bi-plus-circle"></i>&nbsp;แนะนำโปรโมชั่น</a></li>
                     <li>
+                        <li><a class="dropdown-item" href="{% url 'promotions:my_promotion_list' %}"><i
+                            class="bi bi-journal-medical"></i>&nbsp;โปรโมชั่นที่คุณแนะนำ</a></li>
+                <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li><a class="dropdown-item" href="{% url 'brands:followed_brand_list' %}"><i class="bi bi-bag"></i>&nbsp;แบรนด์ที่ติดตาม</a></li>
@@ -69,13 +72,13 @@
                     <a href="{% url 'promotions:all_deals' %}" class="btn btn-outline-dark mb-1 {% if title == 'ALL DEALS!' %}active{% endif %}">
                         <i class="bi bi-cart-fill"></i><span style="font-size: 0.8rem;">&nbsp;All Deals</span>
                     </a>
-                    <a href="#" class="btn btn-outline-dark mb-1 {% if title == 'flash_deals' %}active{% endif %}">
+                    <a href="{% url 'promotions:flash_deals' %}" class="btn btn-outline-dark mb-1 {% if title == 'FLASH DEALS!' %}active{% endif %}">
                         <i class="bi bi-lightning-fill"></i><span style="font-size: 0.8rem;">&nbsp;Flash Deals</span>
                     </a>
                     <a href="{% url 'brands:brand_list' %}" class="btn btn-outline-dark mb-1 {% if title == 'BRANDS!' %}active{% endif %}">
                         <i class="bi bi-bag-fill"></i><span style="font-size: 0.8rem;">&nbsp;Brands</span>
                     </a>
-                    <a href="#" class="btn btn-outline-dark mb-1 {% if title == 'categories' %}active{% endif %}">
+                    <a href="{% url 'promotions:category_list' %}" class="btn btn-outline-dark mb-1 {% if title == 'CATEGORIES' %}active{% endif %}">
                         <i class="bi bi-bag-fill"></i><span style="font-size: 0.8rem;">&nbsp;Categories</span>
                     </a>
                 </li>

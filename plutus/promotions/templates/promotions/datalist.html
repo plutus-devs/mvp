@@ -1,0 +1,20 @@
+<input type="list" name="{{ widget.name }}" 
+    list="{{ widget.name }}" 
+    {% include "django/forms/widgets/attrs.html" %} 
+    {% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}
+>
+
+<datalist id="{{ widget.name }}">
+    {% for group_name, group_choices, group_index in widget.optgroups %}
+    {% if group_name %}
+    <optgroup label="{{ group_name }}">
+        {% endif %}
+
+        {% for option in group_choices %}
+        <option value="{{option.label}}"></option>
+        {% endfor %}
+
+        {% if group_name %}
+    </optgroup>{% endif %}
+    {% endfor %}
+</datalist>

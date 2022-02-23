@@ -1,1 +1,173 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% include 'carousel.html' %}
+{% include 'cate_filters.html' %}
+
+<div class="container-fluid mt-2">
+    <h3 class="mb-3">{{title}}</h3>
+
+    <div class="row row-cols-2 row-cols-md-4 g-4" id="cardDesk">
+
+        {% comment %}
+        <div class="col">
+            <div class="card">
+                <img src="{% static 'mockup/promotion1.jpeg' %}" class="card-img-top" alt="...">
+
+                <div class="card-body">
+                    <h5 class="card-title">PANDORA BUY 3 FREE 1</h5>
+                    
+                    <p class="card-text"><a href="#" class="link-secondary stretched-link">อ่านต่อ...</a></p>
+                </div>
+            </div>
+        </div>
+        {% endcomment %}
+
+    </div>
+
+    <div class="row text-center my-5">
+        <div class="col">
+            <div class="spinner-border" id="loading" style="display: none;"></div>
+            <div id="noContent" style="display: none;">ไม่พบข้อมูล</div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <button type="button" id="loadMoreBtn" class="btn btn-outline-secondary w-100">เพิ่มเติม</button>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    const cateFilterForm = document.querySelector("#cateFilterForm");
+    const priceFilterForm = document.querySelector("#priceFilterForm");
+    const cateFilterList = cateFilterForm.querySelectorAll("input");
+    const minPriceInput = priceFilterForm.querySelector("#minPriceInput");
+    const maxPriceInput = priceFilterForm.querySelector("#maxPriceInput");
+    const priceFilterBtn = document.querySelector("#priceFilterBtn");
+    const brand = "{% if brand %}{{brand.pk|safe}}{% else %}-1{% endif %}";
+    const url = "{% url 'promotions:promotion_list_api' %}";
+    const loadingDiv = document.querySelector("#loading");
+    const cardDesk = document.querySelector("#cardDesk");
+    const loadMoreBtn = document.querySelector("#loadMoreBtn");
+    const qInput = document.querySelector("#qInput");
+    const searchBtn = document.querySelector("#searchBtn");
+    const noContent = document.querySelector("#noContent");
+    const searchForm = document.querySelector("#searchForm");
+
+    var page = 1;
+    var hasNext = true;
+    var isFlash = "{% if page == 'flash_deals' %}1{% else %}0{% endif %}" === "1";
+    resetDataAndCall()
+
+    function resetDataAndCall() {
+        cardDesk.innerHTML = ""
+        hasNext = true;
+        page = 1;
+        noContent.style.display = "none";
+        getData();
+    }
+
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        resetDataAndCall()
+    });
+
+    cateFilterList.forEach(function (element) {
+        element.addEventListener("click", function (event) {
+            resetDataAndCall()
+        });
+    });
+    priceFilterBtn.addEventListener("click", function (event) {
+        resetDataAndCall()
+    });
+
+    searchBtn.addEventListener("click", function (event) {
+        resetDataAndCall()
+    });
+
+    loadMoreBtn.addEventListener("click", function (event) {
+        getData();
+    });
+
+    function getData() {
+        if (!hasNext) {
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.innerHTML = "ไม่มีข้อมูลแล้ว"
+            return;
+        }
+
+        loadingDiv.style.display = "inline-block"
+
+        var minPrice = minPriceInput.value;
+        var maxPrice = maxPriceInput.value;
+        var q = qInput.value
+
+        // var cateList = [];
+        params = `page=${page}&brand=${brand}&q=${q}&flash=${isFlash}`;
+        for (var i = 0; i < cateFilterList.length; ++i) {
+            var cate = cateFilterList[i];
+            if (cate.checked) {
+                // cateList.push(cate.value);
+                params += `&cate_list=${cate.value}`
+            }
+        }
+
+        if (minPrice) {
+            // data["minPrice"] = minPrice;
+            params += `&min_price=${minPrice}`
+        }
+        if (maxPrice) {
+            // data["maxPrice"] = maxPrice;
+            params += `&max_price=${maxPrice}`
+        }
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        var url_params = `${url}?${params}`;
+
+        fetch(url_params, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var promotions = result["message"]["promotions"];
+                hasNext = result["message"]["hasNext"];
+
+                promotions.forEach(promotion => {
+                    cardDesk.innerHTML += `
+                    <div class="col">
+                        <div class="card">
+                            <img src="${promotion.image}" class="card-img-top" alt="${promotion.name}">
+                            <div class="card-body">
+                                <h5 class="card-title text-danger">ขาด ${promotion.left}</h5>
+                                <h5 class="card-title">${promotion.name}</h5>
+                                
+                                <p class="card-text">
+                                    <a href="${promotion.url}" class="link-secondary stretched-link">อ่านต่อ...</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                });
+
+                loadingDiv.style.display = "none"
+                page++;
+                
+                if (!cardDesk.hasChildNodes()) {
+                    
+                    noContent.style.display = "inline-block"
+                }
+            });
+
+    }
+
+</script>
+
+{% endblock script %}

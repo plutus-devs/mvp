@@ -65,7 +65,7 @@ ROOT_URLCONF = 'plutus.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates",],
+        'DIRS': [os.path.join(BASE_DIR, "templates"), "templates",],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -195,3 +195,4 @@ my_default_errors = {
 from django.forms import Field
 
 Field.default_error_messages = my_default_errors
+

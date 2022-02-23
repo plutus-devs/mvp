@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block search_bar %}
+<header class="pt-3">
+    <div class="container d-flex flex-wrap justify-content-center">
+        <div class="col-12 col-lg-8 bg-white">
+            <form class="input-group" id="searchForm" method="get">
+                <span class="input-group-text border border-dark"><i class="bi bi-search"></i></span>
+                <input name="q" type="search" class="form-control border border-dark"
+                    placeholder="ค้นหาโปรโมชั่นที่คุณสร้าง ..." id="qInput" aria-label="Search">
+                <button class="btn btn-outline-dark" type="submit" id="searchBtn">
+                    ค้นหา
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+{% endblock search_bar %}
+
+{% block content %}
+
+{% include 'cate_filters.html' %}
+
+<div class="container-fluid mt-2">
+    <h3 class="mb-3">{{title}}</h3>
+
+    <div class="row row-cols-2 row-cols-md-4 g-4" id="cardDesk">
+
+        {% for promotion in promotion_list %}
+        <div class="col">
+            <div class="card">
+                <img src="{{promotion.image}}" class="card-img-top" alt="{{promotion.name}}">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">ขาด {{promotion.left}}</h5>
+                    <h5 class="card-title">{{promotion.name}}</h5>
+
+                    <p class="card-text">
+                        <a href="{{promotion.url}}" class="link-secondary stretched-link">อ่านต่อ...</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% if not promotion_list %}
+    <div class="row text-center my-5">
+        <div class="col">
+            <div class="spinner-border" id="loading" style="display: none;"></div>
+            <div id="noContent">ไม่พบข้อมูล</div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    const searchForm = document.querySelector("#searchForm");
+    const searchBtn = document.querySelector("#searchBtn");
+    const cateFilterList = cateFilterForm.querySelectorAll("input");
+    const minPriceInput = priceFilterForm.querySelector("#minPriceInput");
+    const maxPriceInput = priceFilterForm.querySelector("#maxPriceInput");
+    const priceFilterBtn = document.querySelector("#priceFilterBtn");
+
+    function submitForm() {
+
+        var minPrice = minPriceInput.value;
+        var maxPrice = maxPriceInput.value;
+
+        if (minPrice) {
+            var minInput = document.createElement("input")
+            minInput.setAttribute("type", "number");
+            minInput.setAttribute("value", minPrice);
+            minInput.setAttribute("name", "min_price");
+            minInput.setAttribute("style", "display: none;")
+            searchForm.appendChild(minInput);
+        }
+        if (maxPrice) {
+            var maxInput = document.createElement("input")
+            maxInput.setAttribute("type", "number");
+            maxInput.setAttribute("value", maxPrice);
+            maxInput.setAttribute("name", "max_price");
+            maxInput.setAttribute("style", "display: none;")
+            searchForm.appendChild(maxInput);
+        }
+
+
+        var selectInput = document.createElement("select");
+        selectInput.setAttribute("name", "cate_list");
+        selectInput.setAttribute("multiple", "");
+        selectInput.setAttribute("style", "display: none;")
+        for (var i = 0; i < cateFilterList.length; ++i) {
+            var cate = cateFilterList[i];
+            var cate_option = document.createElement("option");
+            cate_option.setAttribute("value", cate.value)
+            if (cate.checked) {
+                cate_option.setAttribute("selected", "")
+            }
+            selectInput.appendChild(cate_option);
+        }
+        searchForm.appendChild(selectInput);
+        searchForm.submit();
+    }
+
+    priceFilterBtn.addEventListener("click", function (event) {
+        submitForm();
+    });
+
+    cateFilterList.forEach(function (element) {
+        element.addEventListener("click", function (event) {
+            submitForm();
+        });
+    });
+
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        submitForm();
+    });
+</script>
+{% endblock script %}

@@ -1,0 +1,57 @@
+<div class="container-fluid mt-2 pb-2">
+    <form action="#" method="get" id="cateFilterForm">
+        <div class="d-flex flex-wrap">
+            {% for cate in category_list %}
+            <div class="me-2 mt-2">
+                <input type="checkbox" class="btn-check" id="btn-check-{{cate.pk}}" autocomplete="off"
+                    {% if cate.checked %}
+                    checked
+                    {% endif %}
+                    value="{{cate.pk}}">
+                <label class="btn btn-outline-dark" for="btn-check-{{cate.pk}}" style="font-size: 0.8rem;"><i
+                        class="bi bi-bag-fill"></i>
+                    {{cate.name}}</label>
+            </div>
+            {% endfor %}
+            <div class="me-2 mt-2">
+                <!-- active or not -->
+                <button type="button" class="btn btn-outline-dark active" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal" style="font-size: 0.8rem;">
+                    <i class="bi bi-filter"></i> กรองราคา
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">กรองราคา</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="get" id="priceFilterForm">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">ขั้นต่ำ</span>
+                        <input type="number" class="form-control" name="min_price" id="minPriceInput" min="0" value="{% if min_price %}{{min_price}}{% endif %}">
+                        <span class="input-group-text">บาท</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">ไม่เกิน</span>
+                        <input type="number" class="form-control" name="max_price" id="maxPriceInput" min="0" value="{% if max_price %}{{max_price}}{% endif %}">
+                        <span class="input-group-text">บาท</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- <input type="submit" class="btn btn-primary" value="ยืนยัน"> -->
+                <button type="button" class="btn btn-primary" id="priceFilterBtn">ยืนยัน</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
