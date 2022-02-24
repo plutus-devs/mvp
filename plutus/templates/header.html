@@ -34,13 +34,14 @@
                     <li><a class="dropdown-item" href="{% url 'promotions:create_promotion' %}"><i
                                 class="bi bi-plus-circle"></i>&nbsp;แนะนำโปรโมชั่น</a></li>
                     <li>
-                        <li><a class="dropdown-item" href="{% url 'promotions:my_promotion_list' %}"><i
+                        <li><a class="dropdown-item" href="{% url 'promotions:my_promotion_list' %}?cate_list=-1"><i
                             class="bi bi-journal-medical"></i>&nbsp;โปรโมชั่นที่คุณแนะนำ</a></li>
                 <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li><a class="dropdown-item" href="{% url 'brands:followed_brand_list' %}"><i class="bi bi-bag"></i>&nbsp;แบรนด์ที่ติดตาม</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-cart4"></i>&nbsp;รายการคำสั่งซื้อ</a></li>
+                    <li><button class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#orderListModal"><i class="bi bi-cart4"></i>&nbsp;รายการคำสั่งซื้อ</button></li>
+                    
                     <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person-circle"></i>&nbsp;บัญชี</a></li>
                     <li>
                         <hr class="dropdown-divider">
@@ -52,7 +53,7 @@
             </div>
             {% else %}
             <div>
-                <a href="{% url 'accounts:login' %}" class="ms-2 btn btn-outline-dark"
+                <a href="{% url 'accounts:login' %}?next={{request.path}}" class="ms-2 btn btn-outline-dark"
                     style="font-size: 0.9rem;">เข้าสู่ระบบ</a>
                 <a href="{% url 'accounts:register' %}" class="ms-2 btn btn-outline-dark" style="font-size: 0.9rem;">สมัครสมาชิก</a>
             </div>

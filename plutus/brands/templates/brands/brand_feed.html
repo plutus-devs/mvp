@@ -1,0 +1,18 @@
+{% extends 'promotions/my_promotion_list.html' %}
+
+{% block search_bar %}
+<header class="pt-3">
+    <div class="container d-flex flex-wrap justify-content-center">
+        <div class="col-12 col-lg-8 bg-white">
+            <form class="input-group" id="searchForm" method="get">
+                <span class="input-group-text border border-dark"><i class="bi bi-search"></i></span>
+                <input name="q" type="search" class="form-control border border-dark"
+                    placeholder="ค้นหาโปรโมชั่นของแบรนด์นี้ ..." id="qInput" aria-label="Search" value="{{q}}">
+                <button class="btn btn-outline-dark" type="submit" id="searchBtn">
+                    ค้นหา
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+{% endblock search_bar %}

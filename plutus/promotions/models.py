@@ -30,7 +30,7 @@ class Promotion(models.Model):
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to="promotion_images")
     url = models.URLField()
-    max_number = models.PositiveSmallIntegerField()
+    max_member = models.PositiveSmallIntegerField()
     close_at = models.DateTimeField()
     min_price = models.PositiveIntegerField(default=0)
     max_price = models.PositiveIntegerField(default=0)

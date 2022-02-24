@@ -54,7 +54,7 @@ class CreatePromotionForm(forms.Form):
         label="URL",
         widget=forms.URLInput(attrs={"class": "form-control"}),
     )
-    max_number = forms.IntegerField(
+    max_member = forms.IntegerField(
         label="จำนวนที่รับสมัคร",
         min_value=1,
         widget=forms.NumberInput(attrs={"class": "form-control"}),

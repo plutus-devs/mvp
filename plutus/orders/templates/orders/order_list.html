@@ -1,0 +1,41 @@
+{% load orders_filter %}
+<!-- Order List -->
+<div class="modal fade" id="orderListModal" tabindex="-1" aria-labelledby="orderListModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">รายการสินค้าของคุณ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="orderListDiv">
+
+                {% for o in request.user.order_set.all|is_approved|order_by:'-id'|limit:'100' %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text text-secondary">สถานะ: {{o.get_status_display}}</p>
+                        <p class="card-text">รหัสสินค้าที่ {{forloop.counter}}. {{o.product_id}} -
+                            {{o.product_name}}</p>
+                        <div class="d-flex flex-row">
+                            <p class="card-text">ราคา <span>{{o.discount_price}}</span></p>
+                            <div class="ms-auto">
+                                <a href="{% url 'orders:order_detail' pk=o.id %}"
+                                    class="stretched-link text-secondary">อ่านต่อ ...</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% if not request.user.order_set.all %}
+                <div class="text-center w-100">
+                    ไม่พบข้อมูล
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>

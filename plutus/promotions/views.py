@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.urls import reverse
@@ -7,14 +7,16 @@ from django.core.paginator import Paginator
 from django.templatetags.static import static
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.db.models.aggregates import Min, Max, Count
 
 from promotions.forms import CreatePromotionForm
 from promotions.models import Category, PromotionType, Promotion
+from orders.models import Order
 
 
 @csrf_exempt
 def promotion_list_apiview(request):
-    
 
     filters = Q(status=Promotion.APPROVED)
 
@@ -44,9 +46,18 @@ def promotion_list_apiview(request):
     cate_list = request.GET.getlist("cate_list", [])
     if cate_list:
         filters &= Q(category__in=cate_list)
-        promotion_qs = Promotion.objects.filter(filters).all()
+        num_member = Count("order", filter=Q(order__status__gte=Order.DEPOSIT_PAID))
+        promotion_qs = (
+            Promotion.objects.filter(filters)
+            .annotate(
+                num_member=num_member,
+            )
+            .all()
+        )
     else:
         promotion_qs = Promotion.objects.none()
+
+    tmp = promotion_qs
 
     promotion_list = []
     for promotion in promotion_qs:
@@ -56,9 +67,9 @@ def promotion_list_apiview(request):
             "image": promotion.image.url
             if promotion.image
             else static("img/default_promotion.jpeg"),
-            "num_member": 2,
-            "left": 3,
-            "url": reverse("promotions:all_deals"),
+            "num_member": promotion.num_member,
+            "left": promotion.max_member - promotion.num_member,
+            "url": reverse("promotions:promotion_detail", kwargs={"pk": promotion.id}),
         }
         promotion_list.append(data)
 
@@ -136,7 +147,7 @@ def my_promotion_list_view(request):
     context = {"title": "โปรโมชั่นที่คุณแนะนำ!"}
 
     filters = Q(owner=request.user)
-    q = request.GET.get("q", None)
+    q = request.GET.get("q", "")
     if q != None and q != "":
         for name in q.strip().split():
             filters &= Q(name__icontains=name)
@@ -153,9 +164,13 @@ def my_promotion_list_view(request):
         filters &= Q(max_price__lte=max_)
 
     cate_list = request.GET.getlist("cate_list", None)
+    if "-1" in cate_list:
+        cate_list = list(map(str, Category.objects.values_list("id", flat=True)))
+
     if cate_list:
         filters &= Q(category__in=cate_list)
-        promotion_qs = Promotion.objects.filter(filters).order_by("-created_at").all()
+        num_member = Count("order", filter=Q(order__status__gte=Order.DEPOSIT_PAID))
+        promotion_qs = Promotion.objects.filter(filters).order_by("-created_at").annotate(num_member=num_member).all()
     else:
         promotion_qs = Promotion.objects.none()
 
@@ -168,9 +183,10 @@ def my_promotion_list_view(request):
             "image": promotion.image.url
             if promotion.image
             else static("img/default_promotion.jpeg"),
-            "num_member": 2,
-            "left": 3,
-            "url": reverse("promotions:all_deals"),
+            "num_member": promotion.num_member,
+            "left": promotion.max_member - promotion.num_member,
+            "url": reverse("promotions:promotion_detail", kwargs={"pk": promotion.id}),
+            "status_text": promotion.get_status_display(),
         }
         promotion_list.append(data)
 
@@ -189,6 +205,7 @@ def my_promotion_list_view(request):
     context["category_list"] = category_list
     context["min_price"] = min_price
     context["max_price"] = max_price
+    context["q"] = q
     return render(request, template_name, context)
 
 
@@ -258,3 +275,61 @@ def create_promotion_view(request):
             context["form"] = form
             messages.add_message(request, messages.ERROR, "ไม่สามารถโปรโมชั่นได้")
             return render(request, template_name, context)
+
+
+def promotion_detail_view(request, pk):
+    template_name = "promotions/promotion_detail.html"
+    context = {}
+
+    num_member = Count("order", filter=Q(order__status__gte=Order.DEPOSIT_PAID))
+    promotion = Promotion.objects.filter(id=pk).annotate(num_member=num_member).first()
+    if not promotion:
+        raise Http404
+
+    is_approved = promotion.status == Promotion.APPROVED
+    is_owner = request.user.is_authenticated and promotion.owner == request.user
+    has_access = (is_approved) or (is_owner)
+    if not has_access:
+        raise PermissionDenied
+
+
+    data = {
+        "pk": promotion.id,
+        "name": promotion.name,
+        "close_date": promotion.close_at.strftime("%d/%m/%Y"),
+        "url": promotion.url,
+        "description": promotion.description,
+        "image": promotion.image.url,
+        "max_member": promotion.max_member,
+        "num_member": promotion.num_member,
+        "status_text": promotion.get_status_display(),
+        "show_status": is_owner,
+        "is_approved": is_approved,
+    }
+    context["title"] = promotion.name
+    context["promotion"] = data
+
+    if request.user.is_authenticated:
+        order_qs = request.user.order_set.filter(promotion=promotion).order_by("status0").all()
+        order_list = []
+        total = 0
+        discount_price = 0
+        for order in order_qs:
+            data = {
+                "pk": order.id,
+                "product_id": order.product_id,
+                "product_name": order.product_name,
+                "discount_price": f"{order.discount_price:,}",
+                "status": order.status,
+                "status_text": order.get_status_display(),
+            }
+            order_list.append(data)
+            if order.status >= Order.APPROVED:
+                total += order.full_price
+                discount_price += order.discount_price
+
+        context["order_list"] = order_list
+        context["total_price"] = f"{total:,}"
+        context["discounted_price"] = f"{total - discount_price:,}"
+
+    return render(request, template_name, context)

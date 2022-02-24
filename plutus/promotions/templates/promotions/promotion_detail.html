@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block search_bar %}
+{% endblock search_bar %}
+
+{% block content %}
+<div class="row">
+    <div class="col"></div>
+    <div class="col-10 col-lg-8 mb-3">
+        <section class="border w-100">
+            <div class="d-flex flex-column m-3">
+                <h3 class="fw-bold">โปรโมชั่น:</h3>
+                <h4>{{promotion.name}}{% if promotion.show_status %} <span
+                        class="btn btn-outline-secondary disabled">{{promotion.status_text}}{% endif %}</span></h4>
+                <div class="mb5"></div>
+
+                <h6>ช่วงเวลา: <span class="fw-bold text-decoration-underline">ปัจจุบัน - {{promotion.close_date}}</span>
+                </h6>
+                <h6 style="word-wrap: break-word;">link: <span class="fw-bold text-decoration-underline"><a
+                            href="{{promotion.url}}" target="_blank">{{promotion.url}}</a></h6>
+                <h6>ข้อความจากผู้โพส:</h6>
+                <div class="bg-light p-3">{{promotion.description|safe}}</div>
+                <div class="mb-5"></div>
+                <img src="{{promotion.image}}" alt="{{promotion.name}}">
+                <div class="mb-5"></div>
+
+                <div class="d-flex flex-row">
+                    <div>
+                        <h6>
+                            <span class="fw-bold">จำนวนผู้สนใจตอนนี้:</span>
+                            <span>{{promotion.num_member}}/{{promotion.max_member}}</span>
+                        </h6>
+                        <h6><span class="fw-bold">ปิดโพสต์วันที่:</span> <span>{{promotion.close_date}}</span></h6>
+                    </div>
+
+                    <div class="ms-auto">
+                        {% if promotion.is_approved %}
+
+                        {% if user.is_authenticated %}
+                        <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#addProductModal"><i
+                                class="bi bi-cart4"></i>&nbsp;+1</button>
+                        {% else %}
+                        <a class="btn btn-outline-dark" href="{% url 'accounts:login' %}?next={{request.path}}"><i
+                                class="bi bi-cart4"></i>&nbsp;+1</a>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="d-flex flex-row">
+                    <div>
+                        <h6>สินค้าถึงคือภายใน <span class="fw-bold text-decoration-underline">7 วัน</span> หลังปิดโพสต์
+                        </h6>
+                    </div>
+                    <div class="ms-auto">
+                        {% if promotion.is_approved %}
+                        <h6><span class="fw-bold" id="totalLabel">Total: </span>{{total_price}}</h6>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr class="bg-danger border-2 border-top border-secondary my-3">
+                <h5>Your Discounted Price (Net):</h5>
+                <div class="d-flex flex-row">
+                    <h4 class="fw-bold">{{discounted_price}}</h4>
+                    <div class="ms-auto">
+                        {% if user.is_authenticated %}
+                        <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#seeMoreModal">See
+                            More</button>
+                        {% else %}
+                        <a class="btn btn-outline-dark" href="{% url 'accounts:login' %}?next={{request.path}}">See
+                            More</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="col"></div>
+</div>
+
+<!-- Modal -->
+<form action="{% url 'orders:create_order' promotion_pk=promotion.pk %}" method="post" id="addProductForm">
+    {% csrf_token %}
+
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">กรุณาข้อมูลสินค้าที่ต้องการจากโปรโมชั่นนี้</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div id="formModelBody">
+
+                    </div>
+
+                    <button type="button" id="addMoreProductBtn"
+                        class="btn btn-outline-secondary w-100">เพิ่มสินค้า</button>
+
+                </div>
+                <div class="modal-footer">
+
+                    <button type="submit" class="btn btn-primary">ยืนยัน</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="seeMoreModal" tabindex="-1" aria-labelledby="seeMoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">รายการสินค้าของคุณ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for order in order_list %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text text-secondary">สถานะ: {{order.status_text}}</p>
+                        <p class="card-text">รหัสสินค้าที่ {{forloop.counter}}. {{order.product_id}} -
+                            {{order.product_name}}</p>
+                        <div class="d-flex flex-row">
+                            <p class="card-text">ราคา <span>{{order.discount_price}}</span></p>
+                            <div class="ms-auto">
+                                <a href="{% url 'orders:order_detail' pk=order.pk %}" class="stretched-link text-secondary">อ่านต่อ ...</a>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% if not order_list %}
+                <div class="text-center w-100">
+                    ไม่พบข้อมูล
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    const addMoreProductBtn = document.querySelector("#addMoreProductBtn");
+    const formModelBody = document.querySelector("#formModelBody");
+
+    var numProduct = 0;
+
+    function addProductForm() {
+        numProduct++;
+        var parent = document.createElement("div");
+
+        var divName = document.createElement("h5");
+        divName.innerHTML = `สินค้า ${numProduct} `;
+        var closeBtn = document.createElement("button");
+        closeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+        closeBtn.setAttribute("class", "btn btn-outline-danger");
+        closeBtn.setAttribute("type", "button");
+        closeBtn.addEventListener("click", function (event) {
+            parent.remove();
+        });
+
+        if (numProduct > 1) {
+            divName.appendChild(closeBtn);
+        }
+        parent.appendChild(divName);
+
+        // Product Code
+        var divCode = document.createElement("div");
+        divCode.setAttribute("class", "mb-3 input-group");
+        var spanCode = document.createElement("span");
+        spanCode.innerHTML = "รหัสสินค้า";
+        spanCode.setAttribute("class", "input-group-text");
+        var inputCode = document.createElement("input");
+        inputCode.setAttribute("class", "form-control");
+        inputCode.setAttribute("type", "text");
+        inputCode.setAttribute("name", `productcode_${numProduct}`);
+        inputCode.setAttribute("required", "");
+        divCode.appendChild(spanCode);
+        divCode.appendChild(inputCode);
+        parent.appendChild(divCode);
+
+        // Product Price
+        var divPrice = document.createElement("div");
+        divPrice.setAttribute("class", "mb-3 input-group");
+        var spanPrice = document.createElement("span");
+        spanPrice.innerHTML = "ราคาเต็ม";
+        spanPrice.setAttribute("class", "input-group-text");
+        var inputPrice = document.createElement("input");
+        inputPrice.setAttribute("class", "form-control");
+        inputPrice.setAttribute("type", "number");
+        inputPrice.setAttribute("min", "0");
+        inputPrice.setAttribute("name", `productprice_${numProduct}`);
+        inputPrice.setAttribute("required", "");
+        divPrice.appendChild(spanPrice);
+        divPrice.appendChild(inputPrice);
+        parent.appendChild(divPrice);
+
+        // Product Description
+        var divDesc = document.createElement("div");
+        divDesc.setAttribute("class", "mb-3 input-group");
+        var spanDesc = document.createElement("span");
+        spanDesc.innerHTML = "รายระเอียดอื่น ๆ";
+        spanDesc.setAttribute("class", "input-group-text");
+        var inputDesc = document.createElement("textarea");
+        inputDesc.setAttribute("class", "form-control");
+        inputDesc.setAttribute("rows", "1");
+        inputDesc.setAttribute("name", `productdescription_${numProduct}`);
+        divDesc.appendChild(spanDesc);
+        divDesc.appendChild(inputDesc);
+        parent.appendChild(divDesc);
+
+        formModelBody.appendChild(parent);
+    };
+
+    addMoreProductBtn.addEventListener("click", function (event) {
+        addProductForm();
+    });
+
+    addProductForm();
+</script>
+{% endblock script %}

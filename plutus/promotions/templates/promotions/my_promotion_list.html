@@ -8,7 +8,7 @@
             <form class="input-group" id="searchForm" method="get">
                 <span class="input-group-text border border-dark"><i class="bi bi-search"></i></span>
                 <input name="q" type="search" class="form-control border border-dark"
-                    placeholder="ค้นหาโปรโมชั่นที่คุณสร้าง ..." id="qInput" aria-label="Search">
+                    placeholder="ค้นหาโปรโมชั่นที่คุณสร้าง ..." id="qInput" aria-label="Search" value="{{q}}">
                 <button class="btn btn-outline-dark" type="submit" id="searchBtn">
                     ค้นหา
                 </button>
@@ -20,12 +20,16 @@
 
 {% block content %}
 
+{% if carousel_list %}
+{% include 'carousel.html' %}
+{% endif %}
+
 {% include 'cate_filters.html' %}
 
 <div class="container-fluid mt-2">
     <h3 class="mb-3">{{title}}</h3>
 
-    <div class="row row-cols-2 row-cols-md-4 g-4" id="cardDesk">
+    <div class="row row-cols-2 row-cols-md-3 g-3" id="cardDesk">
 
         {% for promotion in promotion_list %}
         <div class="col">
@@ -36,6 +40,7 @@
                     <h5 class="card-title">{{promotion.name}}</h5>
 
                     <p class="card-text">
+                        <p class="text-secondary">สถานะ: {{promotion.status_text}}</p>
                         <a href="{{promotion.url}}" class="link-secondary stretched-link">อ่านต่อ...</a>
                     </p>
                 </div>

@@ -16,7 +16,7 @@
         {% for brand in brand_list %}
         <div class="col">
             <div class="card">
-                <a href="{% url 'brands:brand_feed' pk=brand.pk %}">
+                <a href="{% url 'brands:brand_feed' pk=brand.pk %}?cate_list=-1">
                     <img src="{{brand.cover}}" class="card-img-top" alt="...">
                 </a>
                 <div class="card-body">
