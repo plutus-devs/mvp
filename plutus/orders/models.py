@@ -1,7 +1,9 @@
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from promotions.models import Promotion
 from accounts.models import User
+from notifications.models import Notification
 
 class Order(models.Model):
     promotion = models.ForeignKey(Promotion, null=True, blank=True, on_delete=models.SET_NULL)
@@ -69,6 +71,14 @@ class Order(models.Model):
         for i in range(0, self.status+1):
             if getattr(self, f"status{i}", None) is None:
                 setattr(self, f"status{i}", timezone.now())
+
+        noti = Notification(
+            user=self.user,
+            title=f"{self.product_id} - {self.promotion.name}",
+            message="คำสั่งซื้อของคุณมีอัพเดท",
+            url=reverse("orders:order_detail", kwargs={"pk": self.id}),
+        )
+        noti.save()
         return super().save(*args, **kwargs)
 
     def __str__(self):

@@ -46,12 +46,6 @@ def create_order_view(request, promotion_pk):
 
 
 @login_required
-@csrf_exempt
-def order_list_apiview(request):
-    return JsonResponse({})
-
-
-@login_required
 def order_detail_view(request, pk):
     template_name = "orders/order_detail.html"
     context = {}
@@ -78,8 +72,8 @@ def order_detail_view(request, pk):
         "dept": f"{order.dept:,}",
 
         "can_pay_deposit": order.status == Order.APPROVED,
-        "can_pay_full": Order.APPROVED <= order.status < Order.DEPOSIT_PAID,
-        "show_timeline": Order.DEPOSIT_PAID <= order.status,
+        "can_pay_full": Order.APPROVED <= order.status <= Order.DEPOSIT_PAID,
+        "show_timeline": Order.DEPOSIT_PAID < order.status,
     }
     context["timeline"] = [ order.get_timeline(i) for i in range(Order.DEPOSIT_PAID + 1, Order.COMPLETED+1, 1) ]
     context["title"] = order.product_id

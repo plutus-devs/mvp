@@ -10,11 +10,11 @@
 
             {% if user.is_authenticated %}
             <button class="btn position-relative border rounded-circle ms-2" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                data-bs-target="#notificationCanvas" aria-controls="notificationCanvas">
                 <i class="bi bi-bell"></i>
-                <span
+                <span id="numNotiSpan"
                     class="position-absolute top-0 start-100 bg-danger translate-middle badge rounded-pill bg-secondary"
-                    style="font-size: 0.6rem; margin-top: 15%;">+99
+                    style="font-size: 0.6rem; margin-top: 15%; display: none;">
                 </span>
             </button>
 
