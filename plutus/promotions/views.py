@@ -75,7 +75,7 @@ def promotion_list_apiview(request):
         elif data["left"] <= 1:
             promotion_list.append(data)
 
-    paginator = Paginator(promotion_list, 1)
+    paginator = Paginator(promotion_list, 12)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     res_data = {
