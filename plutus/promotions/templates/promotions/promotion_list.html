@@ -61,7 +61,7 @@
 
     var page = 1;
     var hasNext = true;
-    var isFlash = "{% if page == 'flash_deals' %}1{% else %}0{% endif %}" === "1";
+    var isFlash = "{% if title == 'FLASH DEALS!' %}1{% else %}0{% endif %}" === "1";
     resetDataAndCall()
 
     function resetDataAndCall() {

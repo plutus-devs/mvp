@@ -41,7 +41,6 @@ def promotion_list_apiview(request):
         filters &= Q(max_price__lte=max_)
 
     flash = request.GET.get("flash", "").lower() == "true"
-    # TODO: Implement flash deals
 
     cate_list = request.GET.getlist("cate_list", [])
     if cate_list:
@@ -71,7 +70,10 @@ def promotion_list_apiview(request):
             "left": promotion.max_member - promotion.num_member,
             "url": reverse("promotions:promotion_detail", kwargs={"pk": promotion.id}),
         }
-        promotion_list.append(data)
+        if not flash:
+            promotion_list.append(data)
+        elif data["left"] <= 1:
+            promotion_list.append(data)
 
     paginator = Paginator(promotion_list, 1)
     page_number = request.GET.get("page")
@@ -226,6 +228,7 @@ def category_list_view(request):
             "pk": category.id,
             "name": category.name,
             "image_url": category.image.url,
+            "url": reverse("promotions:all_deals") + f"?cate_id={category.id}",
         }
         category_list.append(data)
     context["category_list"] = category_list

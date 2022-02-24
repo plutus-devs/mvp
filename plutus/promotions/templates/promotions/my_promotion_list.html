@@ -27,7 +27,10 @@
 {% include 'cate_filters.html' %}
 
 <div class="container-fluid mt-2">
-    <h3 class="mb-3">{{title}}</h3>
+    <h3 class="mb-3">{{title}}
+        {% block action %}
+        {% endblock action %}
+    </h3>
 
     <div class="row row-cols-2 row-cols-md-3 g-3" id="cardDesk">
 

@@ -169,6 +169,8 @@ def brand_feed_view(request, pk):
     ]
     context["category_list"] = category_list
     context["q"] = q
+    context["is_followed"] = request.user in brand.users.all()
+    context["brand"] = brand
 
     return render(request, template_name, context)
 

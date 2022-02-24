@@ -1,5 +1,18 @@
 {% extends 'promotions/my_promotion_list.html' %}
 
+{% block action %}
+{% if user.is_authenticated %}
+{% if is_followed %}
+<a href="{% url 'brands:unfollow_brand' pk=brand.pk %}" class="btn btn-outline-dark active"><i
+        class="bi bi-patch-minus"></i>&nbsp;
+    เลิกติดตาม</a>
+{% else %}
+<a href="{% url 'brands:follow_brand' pk=brand.pk %}" class="btn btn-outline-dark"><i
+        class="bi bi-patch-plus"></i>&nbsp; ติดตาม</a>
+{% endif %}
+{% endif %}
+{% endblock action %}
+
 {% block search_bar %}
 <header class="pt-3">
     <div class="container d-flex flex-wrap justify-content-center">
