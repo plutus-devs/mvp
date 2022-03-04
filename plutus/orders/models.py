@@ -65,6 +65,7 @@ class Order(models.Model):
         }
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         status_field = f"status{self.status}"
         for i in range(self.status+1, 12):
             setattr(self, f"status{i}", None)
@@ -79,7 +80,6 @@ class Order(models.Model):
             url=reverse("orders:order_detail", kwargs={"pk": self.id}),
         )
         noti.save()
-        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Order-{self.id}"
