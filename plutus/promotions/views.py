@@ -302,7 +302,7 @@ def promotion_detail_view(request, pk):
         "close_date": promotion.close_at.strftime("%d/%m/%Y"),
         "url": promotion.url,
         "description": promotion.description,
-        "image": promotion.image.url,
+        "image": promotion.image.url if promotion.image else None,
         "max_member": promotion.max_member,
         "num_member": promotion.num_member,
         "status_text": promotion.get_status_display(),
