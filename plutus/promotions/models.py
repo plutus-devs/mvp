@@ -29,8 +29,22 @@ class Promotion(models.Model):
 
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to="promotion_images")
+    deposit_percent = models.FloatField(default=30.0)
     url = models.URLField()
-    max_member = models.PositiveSmallIntegerField()
+
+    max_member = models.PositiveSmallIntegerField(default=99, null=True, blank=True)
+
+    BY_NUMBER = 0
+    BY_PRICE = 1
+    PROMOTION_TYPE_CHOICES = (
+        (BY_NUMBER, "ตามจำนวน"),
+        (BY_PRICE, "ตามราคา"),
+    )
+
+    type = models.IntegerField(choices=PROMOTION_TYPE_CHOICES, default=BY_NUMBER)
+    threshold = models.FloatField(default=0.0)
+
+
     close_at = models.DateTimeField()
     min_price = models.PositiveIntegerField(default=0)
     max_price = models.PositiveIntegerField(default=0)

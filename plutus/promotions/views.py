@@ -8,7 +8,7 @@ from django.templatetags.static import static
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models.aggregates import Min, Max, Count
+from django.db.models.aggregates import Min, Max, Count, Sum
 
 from promotions.forms import CreatePromotionForm
 from promotions.models import Category, PromotionType, Promotion
@@ -46,17 +46,20 @@ def promotion_list_apiview(request):
     if cate_list:
         filters &= Q(category__in=cate_list)
         num_member = Count("order", filter=Q(order__status__gte=Order.DEPOSIT_PAID))
+        total_price = Sum(
+            "order__full_price", filter=Q(order__status__gte=Order.DEPOSIT_PAID)
+        )
         promotion_qs = (
             Promotion.objects.filter(filters)
+            .order_by("-created_at")
             .annotate(
                 num_member=num_member,
+                total_price=total_price,
             )
             .all()
         )
     else:
         promotion_qs = Promotion.objects.none()
-
-    tmp = promotion_qs
 
     promotion_list = []
     for promotion in promotion_qs:
@@ -67,12 +70,26 @@ def promotion_list_apiview(request):
             if promotion.image
             else static("img/default_promotion.jpeg"),
             "num_member": promotion.num_member,
-            "left": promotion.max_member - promotion.num_member,
             "url": reverse("promotions:promotion_detail", kwargs={"pk": promotion.id}),
+            "status_text": promotion.get_status_display(),
         }
+
+        left = 100
+        if promotion.type == Promotion.BY_NUMBER and promotion.max_member:
+            left = promotion.max_member - promotion.num_member
+            data["left"] = f"ขาดอีก {left:,} รายการ"
+
+        elif promotion.type == Promotion.BY_PRICE and promotion.threshold:
+            left = promotion.total_price if promotion.total_price else 0.0
+            data["left"] = f"ต้องการอีก {promotion.threshold - left:,} ฿"
+
         if not flash:
             promotion_list.append(data)
-        elif data["left"] <= 1:
+
+        elif promotion.type == Promotion.BY_NUMBER and left <= 1:
+            promotion_list.append(data)
+
+        elif promotion.type == Promotion.BY_PRICE and left <= 500.00:
             promotion_list.append(data)
 
     paginator = Paginator(promotion_list, 12)
@@ -146,7 +163,7 @@ def flash_deals_view(request):
 @login_required
 def my_promotion_list_view(request):
     template_name = "promotions/my_promotion_list.html"
-    context = {"title": "โปรโมชั่นที่คุณแนะนำ!"}
+    context = {"title": "โพสต์ที่คุณสร้าง!"}
 
     filters = Q(owner=request.user)
     q = request.GET.get("q", "")
@@ -172,7 +189,18 @@ def my_promotion_list_view(request):
     if cate_list:
         filters &= Q(category__in=cate_list)
         num_member = Count("order", filter=Q(order__status__gte=Order.DEPOSIT_PAID))
-        promotion_qs = Promotion.objects.filter(filters).order_by("-created_at").annotate(num_member=num_member).all()
+        total_price = Sum(
+            "order__full_price", filter=Q(order__status__gte=Order.DEPOSIT_PAID)
+        )
+        promotion_qs = (
+            Promotion.objects.filter(filters)
+            .order_by("-created_at")
+            .annotate(
+                num_member=num_member,
+                total_price=total_price,
+            )
+            .all()
+        )
     else:
         promotion_qs = Promotion.objects.none()
 
@@ -186,10 +214,17 @@ def my_promotion_list_view(request):
             if promotion.image
             else static("img/default_promotion.jpeg"),
             "num_member": promotion.num_member,
-            "left": promotion.max_member - promotion.num_member,
             "url": reverse("promotions:promotion_detail", kwargs={"pk": promotion.id}),
             "status_text": promotion.get_status_display(),
         }
+        if promotion.type == Promotion.BY_NUMBER and promotion.max_member:
+            left = promotion.max_member - promotion.num_member
+            data["left"] = f"ขาดอีก {left:,} รายการ"
+
+        elif promotion.type == Promotion.BY_PRICE and promotion.threshold:
+            left = promotion.total_price if promotion.total_price else 0.0
+            data["left"] = f"ต้องการอีก {promotion.threshold - left:,} ฿"
+
         promotion_list.append(data)
 
     context["promotion_list"] = promotion_list
@@ -239,7 +274,7 @@ def category_list_view(request):
 @login_required
 def create_promotion_view(request):
     template_name = "promotions/create_promotion.html"
-    context = {"title": "แนะนำโปรโมชั่น"}
+    context = {"title": "สร้างโพสต์"}
 
     if request.method == "GET":
         form = CreatePromotionForm()
@@ -285,7 +320,14 @@ def promotion_detail_view(request, pk):
     context = {}
 
     num_member = Count("order", filter=Q(order__status__gte=Order.DEPOSIT_PAID))
-    promotion = Promotion.objects.filter(id=pk).annotate(num_member=num_member).first()
+    total_price = Sum(
+        "order__full_price", filter=Q(order__status__gte=Order.DEPOSIT_PAID)
+    )
+    promotion = (
+        Promotion.objects.filter(id=pk)
+        .annotate(num_member=num_member, total_price=total_price)
+        .first()
+    )
     if not promotion:
         raise Http404
 
@@ -295,7 +337,6 @@ def promotion_detail_view(request, pk):
     if not has_access:
         raise PermissionDenied
 
-
     data = {
         "pk": promotion.id,
         "name": promotion.name,
@@ -303,20 +344,29 @@ def promotion_detail_view(request, pk):
         "url": promotion.url,
         "description": promotion.description,
         "image": promotion.image.url if promotion.image else None,
-        "max_member": promotion.max_member,
-        "num_member": promotion.num_member,
         "status_text": promotion.get_status_display(),
         "show_status": is_owner,
         "is_approved": is_approved,
     }
+
+    if promotion.type == Promotion.BY_NUMBER:
+        data["max_member"] = promotion.max_member
+        data["num_member"] = promotion.num_member
+
+    elif promotion.type == Promotion.BY_PRICE:
+        data["max_member"] = promotion.threshold
+        data["num_member"] = promotion.total_price if promotion.total_price else 0.0
+
     context["title"] = promotion.name
     context["promotion"] = data
 
     if request.user.is_authenticated:
-        order_qs = request.user.order_set.filter(promotion=promotion).order_by("status0").all()
+        order_qs = Order.objects.filter(promotion=promotion).order_by("status0").all()
         order_list = []
+        all_order_list = []
         total = 0
         discount_price = 0
+        our_total = 0
         for order in order_qs:
             data = {
                 "pk": order.id,
@@ -326,13 +376,20 @@ def promotion_detail_view(request, pk):
                 "status": order.status,
                 "status_text": order.get_status_display(),
             }
-            order_list.append(data)
             if order.status >= Order.APPROVED:
                 total += order.full_price
-                discount_price += order.discount_price
+                all_order_list.append(data)
+
+            if order.user == request.user:
+                order_list.append(data)
+                if order.status >= Order.APPROVED:
+                    our_total += order.full_price
+                    discount_price += order.discount_price
+
 
         context["order_list"] = order_list
         context["total_price"] = f"{total:,}"
-        context["discounted_price"] = f"{total - discount_price:,}"
+        context["discounted_price"] = f"{our_total - discount_price:,}"
+        context["all_order_list"] = all_order_list
 
     return render(request, template_name, context)

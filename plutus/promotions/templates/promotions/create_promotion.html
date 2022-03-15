@@ -24,7 +24,7 @@
                             {{field.errors}}
                         </div>
                     </div>
-                    
+
                     {% endwith %}
 
                     <!-- category -->
@@ -82,13 +82,50 @@
                     </div>
                     {% endwith %}
 
-                    <!-- max_member -->
-                    {% with field=form.max_member %}
+                    <!-- deposit_percent -->
+                    {% with field=form.deposit_percent %}
+                    <label for="{{ field.id_for_label }}" class="form-label">{{field.label }}</label>
+                    <div class="input-group mb-3">
+                        {{field}}
+                        <span class="input-group-text">%</span>
+                        <div class="invalid-feedback">
+                            {{field.errors}}
+                        </div>
+                    </div>
+                    {% endwith %}
+
+                    <!-- type -->
+                    {% with field=form.type %}
                     <div class="mb-3">
                         <label for="{{ field.id_for_label }}" class="form-label">{{field.label }}</label>
                         {{field}}
                         <div class="invalid-feedback">
                             {{field.errors}}
+                        </div>
+                    </div>
+                    {% endwith %}
+
+                    <!-- max_member -->
+                    {% with field=form.max_member %}
+                    <div class="mb-3" id="byNumberDiv">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{field.label }}</label>
+                        {{field}}
+                        <div class="invalid-feedback">
+                            {{field.errors}}
+                        </div>
+                    </div>
+                    {% endwith %}
+
+                    <!-- threshold -->
+                    {% with field=form.threshold %}
+                    <div id="byPriceDiv">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{field.label }}</label>
+                        <div class="input-group mb-3">
+                            {{field}}
+                            <span class="input-group-text">฿</span>
+                            <div class="invalid-feedback">
+                                {{field.errors}}
+                            </div>
                         </div>
                     </div>
                     {% endwith %}
@@ -132,3 +169,33 @@
     <div class="col"></div>
 </div>
 {% endblock content %}
+
+{% block script %}
+<script>
+    const bySelect = document.querySelector("#{{form.type.id_for_label}}");
+    const byNumberInput = document.querySelector("#byNumberDiv");
+    const byPriceInput = document.querySelector("#byPriceDiv");
+
+    function hideAll() {
+        byPriceInput.style.display = "none";
+        byNumberInput.style.display = "none";
+    }
+
+    function show() {
+        var selected = bySelect.value;
+        if (selected == 0) {
+            byNumberInput.style.display = "block";
+        } else if (selected == 1) {
+            byPriceInput.style.display = "block";
+        }
+    }
+
+    hideAll();
+    show();
+
+    bySelect.addEventListener("change", function () {
+        hideAll();
+        show();
+    });
+</script>
+{% endblock script %}

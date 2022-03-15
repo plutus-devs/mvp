@@ -35,7 +35,7 @@
 
         <div class="d-flex flex-column px-2 px-lg-5">
             <div class="d-flex mb-3 align-items-stretch">
-                <h4 class="fw-light me-auto">ยอดชำระมัดจำ (30%)</h4>
+                <h4 class="fw-light me-auto">ยอดชำระมัดจำ ({{order.deposit_percent}}%)</h4>
                 <h4 class="fw-blod text-danger">{{order.deposit}} ฿</h4>
                 {% if order.can_pay_deposit %}
                 <button type="button" data-bs-toggle="modal" data-bs-target="#modalUploadDeposit"

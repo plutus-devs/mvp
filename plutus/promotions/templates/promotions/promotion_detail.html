@@ -54,7 +54,7 @@
                     </div>
                     <div class="ms-auto">
                         {% if promotion.is_approved %}
-                        <h6><span class="fw-bold" id="totalLabel">Total: </span>{{total_price}}</h6>
+                        <h6><span class="fw-bold" id="totalLabel">ราคาสินค้ารวม: </span>{{total_price}}</h6>
                         {% endif %}
                     </div>
                 </div>
@@ -65,14 +65,23 @@
                     <h4 class="fw-bold">{{discounted_price}}</h4>
                     <div class="ms-auto">
                         {% if user.is_authenticated %}
-                        <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#seeMoreModal">See
-                            More</button>
+                        <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#seeMoreModal">คำสั่งซื้อของคุณ</button>
                         {% else %}
-                        <a class="btn btn-outline-dark" href="{% url 'accounts:login' %}?next={{request.path}}">See
-                            More</a>
+                        <a class="btn btn-outline-dark" href="{% url 'accounts:login' %}?next={{request.path}}">คำสั่งซื้อของคุณ</a>
                         {% endif %}
                     </div>
                 </div>
+
+                <hr class="bg-danger border-2 border-top border-secondary my-3">
+                <h5>คำสั่งซื้อทั้งหมด</h5>
+                {% for order in all_order_list %}
+                <div class="card mb-3 mx-3 py-0" style="border-radius: 0.5em;">
+                    <div class="card-body mx-2 d-flex flex-row p-1">
+                        <p class="card-text my-1">สินค้า: {{order.product_name}}</p>
+                        <p class="card-text ms-auto my-1">ราคา <span>{{order.discount_price}}</span></p>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </section>
     </div>
@@ -126,7 +135,9 @@
                         <p class="card-text">รหัสสินค้าที่ {{forloop.counter}}. {{order.product_id}} -
                             {{order.product_name}}</p>
                         <div class="d-flex flex-row">
+                            {% if order.status >= 2 %}
                             <p class="card-text">ราคา <span>{{order.discount_price}}</span></p>
+                            {% endif %}
                             <div class="ms-auto">
                                 <a href="{% url 'orders:order_detail' pk=order.pk %}" class="stretched-link text-secondary">อ่านต่อ ...</a>
                             </div>
@@ -181,7 +192,7 @@
         var divCode = document.createElement("div");
         divCode.setAttribute("class", "mb-3 input-group");
         var spanCode = document.createElement("span");
-        spanCode.innerHTML = "รหัสสินค้า";
+        spanCode.innerHTML = "รหัสสินค้า/URL";
         spanCode.setAttribute("class", "input-group-text");
         var inputCode = document.createElement("input");
         inputCode.setAttribute("class", "form-control");

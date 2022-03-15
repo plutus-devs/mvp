@@ -1,14 +1,16 @@
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 from brands.models import Brand
-from promotions.models import Category, PromotionType
+from promotions.models import Category, PromotionType, Promotion
+
 
 class DatalistInput(forms.widgets.Select):
-    input_type="text"
-    template_name ="promotions/datalist.html"
+    input_type = "text"
+    template_name = "promotions/datalist.html"
 
     def format_value(self, value):
-        return value if value else ''
+        return value if value else ""
+
 
 class CreatePromotionForm(forms.Form):
     brand = forms.ModelChoiceField(
@@ -37,7 +39,18 @@ class CreatePromotionForm(forms.Form):
         label="ประเภทโปรโมชั่น",
         widget=DatalistInput(
             attrs={"class": "form-control"},
-            choices=[ (pt.id, pt.name) for pt in PromotionType.objects.all()],
+            choices=[(pt.id, pt.name) for pt in PromotionType.objects.all()],
+        ),
+    )
+
+    type = forms.ChoiceField(
+        label="ส่วนลดโดย",
+        choices=Promotion.PROMOTION_TYPE_CHOICES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-control selectpicker",
+                "data-live-search": "true",
+            }
         ),
     )
 
@@ -58,11 +71,14 @@ class CreatePromotionForm(forms.Form):
         label="จำนวนที่รับสมัคร",
         min_value=1,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
+        required=False,
     )
+
     close_at = forms.DateTimeField(
         label="วันสิ้นสุด (ค.ศ.)",
-        widget=forms.DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
-        
+        widget=forms.DateTimeInput(
+            attrs={"type": "datetime-local", "class": "form-control"}
+        ),
     )
     description = forms.CharField(
         label="ข้อมูลเพิ่มเติม",
@@ -71,4 +87,19 @@ class CreatePromotionForm(forms.Form):
         ),
         required=False,
     )
+    deposit_percent = forms.FloatField(
+        label="ส่วนลด",
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "min": "30",
+                "max": "100",
+            }
+        ),
+    )
 
+    threshold = forms.FloatField(
+        label="ราคาคั่น",
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+        required=False,
+    )

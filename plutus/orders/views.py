@@ -70,7 +70,7 @@ def order_detail_view(request, pk):
 
         "deposit": f"{order.deposit:,}",
         "dept": f"{order.dept:,}",
-
+        "deposit_percent": f"{order.promotion.deposit_percent}",
         "can_pay_deposit": order.status == Order.APPROVED,
         "can_pay_full": Order.APPROVED <= order.status <= Order.DEPOSIT_PAID,
         "show_timeline": Order.DEPOSIT_PAID < order.status,
