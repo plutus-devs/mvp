@@ -88,12 +88,13 @@ class CreatePromotionForm(forms.Form):
         required=False,
     )
     deposit_percent = forms.FloatField(
-        label="ส่วนลด",
+        label="มัดจำคั่นต่ำ (30%)",
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
                 "min": "30",
                 "max": "100",
+                "value": "30",
             }
         ),
     )

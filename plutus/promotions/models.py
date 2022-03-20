@@ -42,7 +42,7 @@ class Promotion(models.Model):
     )
 
     type = models.IntegerField(choices=PROMOTION_TYPE_CHOICES, default=BY_NUMBER)
-    threshold = models.FloatField(default=0.0)
+    threshold = models.FloatField(blank=True, null=True, default=0.0)
 
 
     close_at = models.DateTimeField()
@@ -58,8 +58,6 @@ class Promotion(models.Model):
         (APPROVED, "อนุมัติแล้ว"),
         (CLOSED, "ปิดแล้ว"),
     )
-
-    
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     created_at = models.DateTimeField(auto_now_add=True)

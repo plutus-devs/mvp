@@ -25,7 +25,6 @@ urlpatterns = [
     path("brands/", include("brands.urls")),
     path("orders/", include("orders.urls")),
     path("notifications/", include("notifications.urls")),
-    path("chat/", include("chat.urls")),
 ]
 
 if settings.DEBUG:

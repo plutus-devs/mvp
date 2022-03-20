@@ -39,6 +39,7 @@ class Order(models.Model):
     )
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+    reject_text = models.TextField(blank=True)
 
     status0 = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     status1 = models.DateTimeField(blank=True, null=True)
@@ -57,7 +58,6 @@ class Order(models.Model):
         for v, t in self.STATUS_CHOICES:
             if v == sid:
                 text = t
-        
         return {
             "text": text,
             "active": timestamp is not None,
@@ -65,21 +65,22 @@ class Order(models.Model):
         }
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
         status_field = f"status{self.status}"
         for i in range(self.status+1, 12):
             setattr(self, f"status{i}", None)
         for i in range(0, self.status+1):
             if getattr(self, f"status{i}", None) is None:
                 setattr(self, f"status{i}", timezone.now())
+        super().save(*args, **kwargs)
 
         noti = Notification(
             user=self.user,
             title=f"{self.product_id} - {self.promotion.name}",
-            message="คำสั่งซื้อของคุณมีอัพเดท",
+            message=f"คำสั่งซื้อของคุณมีอัพเดท เป็น{self.STATUS_CHOICES[self.status][1]}",
             url=reverse("orders:order_detail", kwargs={"pk": self.id}),
         )
         noti.save()
+
 
     def __str__(self):
         return f"Order-{self.id}"
