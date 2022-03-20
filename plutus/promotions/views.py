@@ -283,7 +283,10 @@ def create_promotion_view(request):
 
     elif request.method == "POST":
         form = CreatePromotionForm(request.POST, request.FILES)
-        if form.is_valid():
+        if (form.is_valid() 
+            and not (form["type"].value() == "0" and form["max_member"].value() == "") \
+            and not (form["type"].value() == "1" and form["threshold"].value() == "")
+        ):
 
             promotion = Promotion(owner=request.user)
             for field in form.fields:
@@ -303,8 +306,32 @@ def create_promotion_view(request):
             return redirect("promotions:all_deals")
         else:
             for field in form.fields:
-                if field in ["description", "image"]:
+                if field in ["description", "image", "type"]:
                     continue
+
+                if field == "threshold" and form["type"].value() == "1":
+                    try:
+                        v = float(form[field].value())
+                        form[field].field.widget.attrs["class"] += " is-valid"
+                    except:
+                        form[field].field.widget.attrs["class"] += " is-invalid"
+                        
+                    continue
+
+                if field == "max_member" and form["type"].value() == "0":
+                    try:
+                        v = int(form[field].value())
+                        form[field].field.widget.attrs["class"] += " is-valid"
+                    except:
+                        form[field].field.widget.attrs["class"] += " is-invalid"
+                    continue
+
+                if field == "deposit_percent":
+                    if 30 <= float(form[field].value()) <= 100:
+                        form[field].field.widget.attrs["class"] += " is-valid"
+                    else:
+                        form[field].field.widget.attrs["class"] += " is-invalid"
+
                 if form[field].errors:
                     form[field].field.widget.attrs["class"] += " is-invalid"
                 else:
