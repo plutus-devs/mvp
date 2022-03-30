@@ -11,8 +11,7 @@ from notifications.models import Notification
 @login_required
 @csrf_exempt
 def notification_list_apiview(request):
-    notification_qs = request.user.notification_set.filter(read=False).all()
-    print(timezone.localtime())
+    notification_qs = request.user.notification_set.filter(read=False).order_by("-id").all()
     res_data = {
         "message": {
             "notifications": [{

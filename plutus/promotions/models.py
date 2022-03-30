@@ -74,7 +74,7 @@ class Promotion(models.Model):
         noti = Notification(
             user=self.owner,
             title=f"{self.name}",
-            message=f"คำสั่งซื้อของคุณมีอัพเดท เป็น{self.STATUS_CHOICES[self.status][1]}",
+            message=f"โปรโมชั่นของคุณมีอัพเดท เป็น{self.STATUS_CHOICES[self.status][1]}",
             url=reverse("promotions:promotion_detail", kwargs={"pk": self.id}),
         )
         noti.save()

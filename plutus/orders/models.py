@@ -4,6 +4,8 @@ from django.utils import timezone
 from promotions.models import Promotion
 from accounts.models import User
 from notifications.models import Notification
+import pytz
+
 
 class Order(models.Model):
     promotion = models.ForeignKey(Promotion, null=True, blank=True, on_delete=models.SET_NULL)
@@ -61,7 +63,7 @@ class Order(models.Model):
         return {
             "text": text,
             "active": timestamp is not None,
-            "timestamp": "" if timestamp is None else timestamp.strftime("%b. %d, %H:%M")
+            "timestamp": "" if timestamp is None else timestamp.astimezone(timezone.get_current_timezone()).strftime("%b. %d, %H:%M")
         }
 
     def save(self, *args, **kwargs):
