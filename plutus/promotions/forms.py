@@ -64,7 +64,7 @@ class CreatePromotionForm(forms.Form):
         required=False,
     )
     url = forms.URLField(
-        label="URL",
+        label="ลิ้งค์เว็บไซต์",
         widget=forms.URLInput(attrs={"class": "form-control"}),
     )
     max_member = forms.IntegerField(
@@ -88,7 +88,7 @@ class CreatePromotionForm(forms.Form):
         required=False,
     )
     deposit_percent = forms.FloatField(
-        label="มัดจำคั่นต่ำ (30%)",
+        label="มัดจำขั้นต่ำ (30%)",
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control",
