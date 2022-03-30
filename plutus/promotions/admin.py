@@ -5,7 +5,7 @@ class PromotionTypeAdmin(admin.ModelAdmin):
     list_display = ["id", "name"]
 
 class PromotionAdmin(admin.ModelAdmin):
-    list_display = ["name", "status"]
+    list_display = ["id", "name", "status"]
 
 admin.site.register(Category)
 admin.site.register(PromotionType, PromotionTypeAdmin)
