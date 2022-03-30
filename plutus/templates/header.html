@@ -18,7 +18,11 @@
                 </span>
             </button>
 
-            <div class="dropdown text-end ms-4">
+            <a href="{% url 'promotions:create_promotion' %}" class="btn rounded-circle border ms-3 fw-bold">
+                <i class="bi bi-plus"></i>
+            </a>
+
+            <div class="dropdown text-end ms-3">
                 <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     {% if request.user.profile.image %}
@@ -31,8 +35,8 @@
                 </a>
 
                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="{% url 'promotions:create_promotion' %}"><i
-                                class="bi bi-plus-circle"></i>&nbsp;สร้างโพสต์</a></li>
+                    <!-- <li><a class="dropdown-item" href="{% url 'promotions:create_promotion' %}"><i
+                                class="bi bi-plus-circle"></i>&nbsp;สร้างโพสต์</a></li> -->
                     <li>
                         <li><a class="dropdown-item" href="{% url 'promotions:my_promotion_list' %}?cate_list=-1"><i
                             class="bi bi-journal-medical"></i>&nbsp;โพสต์ที่คุณสร้าง</a></li>
