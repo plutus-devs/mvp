@@ -1,8 +1,11 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 from accounts.models import User
 from brands.models import Brand
 from ckeditor.fields import RichTextField
+from notifications.models import Notification
+
 
 class Category(models.Model):
 
@@ -65,6 +68,16 @@ class Promotion(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        noti = Notification(
+            user=self.owner,
+            title=f"{self.name}",
+            message=f"คำสั่งซื้อของคุณมีอัพเดท เป็น{self.STATUS_CHOICES[self.status][1]}",
+            url=reverse("promotions:promotion_detail", kwargs={"pk": self.id}),
+        )
+        noti.save()
 
     def is_closed(self):
         if self.status == self.CLOSED:

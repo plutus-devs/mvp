@@ -74,13 +74,16 @@ def promotion_list_apiview(request):
             "status_text": promotion.get_status_display(),
         }
 
-        left = 100
         if promotion.type == Promotion.BY_NUMBER and promotion.max_member:
             left = promotion.max_member - promotion.num_member
             data["left"] = f"ขาดอีก {left:,} รายการ"
 
         elif promotion.type == Promotion.BY_PRICE and promotion.threshold:
             left = promotion.total_price if promotion.total_price else 0.0
+            if promotion.threshold - left <= 0.0:
+                promotion.status = Promotion.CLOSED
+                promotion.save()
+                continue
             data["left"] = f"ต้องการอีก {promotion.threshold - left:,} ฿"
 
         if not flash:
@@ -113,7 +116,7 @@ def all_deals_view(request):
     template_name = "promotions/promotion_list.html"
     context = {"title": "ALL DEALS!"}
 
-    promotion_qs = Promotion.objects.all()
+    promotion_qs = Promotion.objects.filter(status=Promotion.APPROVED).all()
 
     # CAROUSEL
     carousel_qs = (

@@ -1,18 +1,42 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+<meta property="og:url" content="https://plutuspromo.com/{{promotion.pk}}/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{{promotion.name}}" />
+<meta property="og:description" content="{{promotion.name}}" />
+<meta property="og:image" content="https://plutuspromo.com/{{promotion.image}}" />
+
+{% endblock title %}
+
 {% block search_bar %}
 {% endblock search_bar %}
 
 {% block content %}
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
 <div class="row">
     <div class="col"></div>
     <div class="col-10 col-lg-8 mb-3">
         <section class="border w-100">
             <div class="d-flex flex-column m-3">
                 <h3 class="fw-bold">โปรโมชั่น:</h3>
-                <h4>{{promotion.name}}{% if promotion.show_status %} <span
-                        class="btn btn-outline-secondary disabled">{{promotion.status_text}}{% endif %}</span></h4>
+                <h4>{{promotion.name}}
+                    <div class="fb-share-button" data-href="https://www.your-domain.com/your-page.html"
+                        data-layout="button_count">
+                    </div>
+
+                    {% if promotion.show_status %} <span
+                        class="btn btn-outline-secondary disabled">{{promotion.status_text}}{% endif %}</span>
+                </h4>
                 <div class="mb5"></div>
 
                 <h6>ช่วงเวลา: <span class="fw-bold text-decoration-underline">ปัจจุบัน - {{promotion.close_date}}</span>
@@ -65,9 +89,11 @@
                     <h4 class="fw-bold">{{discounted_price}}</h4>
                     <div class="ms-auto">
                         {% if user.is_authenticated %}
-                        <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#seeMoreModal">คำสั่งซื้อของคุณ</button>
+                        <button class="btn btn-outline-dark" data-bs-toggle="modal"
+                            data-bs-target="#seeMoreModal">คำสั่งซื้อของคุณ</button>
                         {% else %}
-                        <a class="btn btn-outline-dark" href="{% url 'accounts:login' %}?next={{request.path}}">คำสั่งซื้อของคุณ</a>
+                        <a class="btn btn-outline-dark"
+                            href="{% url 'accounts:login' %}?next={{request.path}}">คำสั่งซื้อของคุณ</a>
                         {% endif %}
                     </div>
                 </div>
@@ -139,11 +165,12 @@
                             <p class="card-text">ราคา <span>{{order.discount_price}}</span></p>
                             {% endif %}
                             <div class="ms-auto">
-                                <a href="{% url 'orders:order_detail' pk=order.pk %}" class="stretched-link text-secondary">อ่านต่อ ...</a>
+                                <a href="{% url 'orders:order_detail' pk=order.pk %}"
+                                    class="stretched-link text-secondary">อ่านต่อ ...</a>
                             </div>
                         </div>
-                        
-                        
+
+
                     </div>
                 </div>
                 {% endfor %}
