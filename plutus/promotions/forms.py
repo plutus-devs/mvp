@@ -13,6 +13,14 @@ class DatalistInput(forms.widgets.Select):
 
 
 class CreatePromotionForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(CreatePromotionForm, self).__init__(*args, **kwargs)
+        self.fields["promotion_type"].widget = DatalistInput(
+            attrs={"class": "form-control"},
+            choices=[(pt.id, pt.name) for pt in PromotionType.objects.all()],
+        )
+
     brand = forms.ModelChoiceField(
         queryset=Brand.objects.all(),
         empty_label=None,
@@ -37,10 +45,7 @@ class CreatePromotionForm(forms.Form):
     )
     promotion_type = forms.CharField(
         label="ประเภทโปรโมชั่น",
-        widget=DatalistInput(
-            attrs={"class": "form-control"},
-            choices=[(pt.id, pt.name) for pt in PromotionType.objects.all()],
-        ),
+        widget=None,
     )
 
     type = forms.ChoiceField(
