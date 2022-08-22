@@ -4,7 +4,6 @@ from django.utils import timezone
 from promotions.models import Promotion
 from accounts.models import User
 from notifications.models import Notification
-import pytz
 
 
 class Order(models.Model):
@@ -15,7 +14,7 @@ class Order(models.Model):
     full_price = models.FloatField()
     description = models.TextField(blank=True)
     product_name = models.CharField(max_length=255, blank="", default="")
- 
+
     discount_price = models.FloatField(default=0)
     deposit = models.FloatField(default=0)
     dept = models.FloatField(default=0)
@@ -31,13 +30,13 @@ class Order(models.Model):
 
     STATUS_CHOICES = (
         (PENDING, "รออนุมัติ"),
-        (REJECTED,"ถูกปฏิเสธ"),
-        (APPROVED,"อนุมัติแล้ว กรุณาชำระมัดจำ"),
-        (DEPOSIT_PAID,"จ่ายมันจำเรียบร้อยแล้ว กรุณาชำระค่าบริการทั้งหมด"),
-        (4,"ร้านค้าส่งสินค้ามา PLUTUS"),
-        (5,"PLUTUS กำลังแยกสินค้า"),
-        (6,"ออกจาก PLUTUS แล้ว"),
-        (COMPLETED,"เรียบร้อยแล้ว"),
+        (REJECTED, "ถูกปฏิเสธ"),
+        (APPROVED, "อนุมัติแล้ว กรุณาชำระมัดจำ"),
+        (DEPOSIT_PAID, "จ่ายมันจำเรียบร้อยแล้ว กรุณาชำระค่าบริการทั้งหมด"),
+        (4, "ร้านค้าส่งสินค้ามา PLUTUS"),
+        (5, "PLUTUS กำลังแยกสินค้า"),
+        (6, "ออกจาก PLUTUS แล้ว"),
+        (COMPLETED, "เรียบร้อยแล้ว"),
     )
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
@@ -63,14 +62,15 @@ class Order(models.Model):
         return {
             "text": text,
             "active": timestamp is not None,
-            "timestamp": "" if timestamp is None else timestamp.astimezone(timezone.get_current_timezone()).strftime("%b. %d, %H:%M")
+            "timestamp": "" if timestamp is None else timestamp.astimezone(timezone.get_current_timezone()).strftime(
+                "%b. %d, %H:%M")
         }
 
     def save(self, *args, **kwargs):
         status_field = f"status{self.status}"
-        for i in range(self.status+1, 12):
+        for i in range(self.status + 1, 12):
             setattr(self, f"status{i}", None)
-        for i in range(0, self.status+1):
+        for i in range(0, self.status + 1):
             if getattr(self, f"status{i}", None) is None:
                 setattr(self, f"status{i}", timezone.now())
         super().save(*args, **kwargs)
@@ -82,7 +82,6 @@ class Order(models.Model):
             url=reverse("orders:order_detail", kwargs={"pk": self.id}),
         )
         noti.save()
-
 
     def __str__(self):
         return f"Order-{self.id}"
