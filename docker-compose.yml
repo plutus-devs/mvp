@@ -9,12 +9,12 @@ services:
     environment:
       - "MYSQL_ROOT_PASSWORD=1234"
     ports:
-      - 3306:3306
+      - "3306:3306"
 
   pma:
     image: phpmyadmin
     restart: unless-stopped
     ports:
-      - 8082:80
+      - "8082:80"
     environment:
       PMA_HOST: mariadb
