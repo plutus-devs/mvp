@@ -1,7 +1,5 @@
 from django import forms
 from accounts.models import Profile, User
-from django.contrib.auth import authenticate
-
 
 class LoginForm(forms.Form):
 

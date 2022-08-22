@@ -8,7 +8,6 @@ from notifications.models import Notification
 
 
 class Category(models.Model):
-
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to="categoriy_images")
 
@@ -24,7 +23,6 @@ class PromotionType(models.Model):
 
 
 class Promotion(models.Model):
-    
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True)
@@ -46,7 +44,6 @@ class Promotion(models.Model):
 
     type = models.IntegerField(choices=PROMOTION_TYPE_CHOICES, default=BY_NUMBER)
     threshold = models.FloatField(blank=True, null=True, default=0.0)
-
 
     close_at = models.DateTimeField()
     min_price = models.PositiveIntegerField(default=0)
@@ -82,7 +79,7 @@ class Promotion(models.Model):
     def is_closed(self):
         if self.status == self.CLOSED:
             return True
-        
+
         if timezone.now() >= self.close_at:
             self.status = self.CLOSED
             self.save()

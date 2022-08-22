@@ -1,4 +1,4 @@
-from django.http import Http404, JsonResponse, HttpResponseForbidden
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.urls import reverse
@@ -8,7 +8,7 @@ from django.templatetags.static import static
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models.aggregates import Min, Max, Count, Sum
+from django.db.models.aggregates import Count, Sum
 
 from promotions.forms import CreatePromotionForm
 from promotions.models import Category, PromotionType, Promotion

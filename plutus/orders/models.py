@@ -67,7 +67,6 @@ class Order(models.Model):
         }
 
     def save(self, *args, **kwargs):
-        status_field = f"status{self.status}"
         for i in range(self.status + 1, 12):
             setattr(self, f"status{i}", None)
         for i in range(0, self.status + 1):

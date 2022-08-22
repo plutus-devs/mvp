@@ -50,7 +50,7 @@ def order_detail_view(request, pk):
     context = {}
 
     order = Order.objects.filter(pk=pk, user=request.user).first()
-    if order == None:
+    if order is None:
         raise Http404
 
     context["order"] = {
@@ -74,7 +74,7 @@ def order_detail_view(request, pk):
         "can_pay_full": Order.APPROVED <= order.status <= Order.DEPOSIT_PAID,
         "show_timeline": Order.DEPOSIT_PAID < order.status,
     }
-    context["timeline"] = [ order.get_timeline(i) for i in range(Order.DEPOSIT_PAID + 1, Order.COMPLETED+1, 1) ]
+    context["timeline"] = [order.get_timeline(i) for i in range(Order.DEPOSIT_PAID + 1, Order.COMPLETED + 1, 1)]
     context["title"] = order.product_id
 
     context["form"] = UploadImageForm()
@@ -82,12 +82,13 @@ def order_detail_view(request, pk):
 
     return render(request, template_name, context)
 
+
 @login_required
 def upload_deposit_view(request, pk):
     order = Order.objects.filter(pk=pk, user=request.user).first()
-    if order == None:
+    if order is None:
         raise Http404
-    
+
     if request.method == "POST":
         form = UploadDeposit(request.POST, request.FILES)
         if form.is_valid():
@@ -104,9 +105,9 @@ def upload_deposit_view(request, pk):
 @login_required
 def upload_full_view(request, pk):
     order = Order.objects.filter(pk=pk, user=request.user).first()
-    if order == None:
+    if order is None:
         raise Http404
-    
+
     if request.method == "POST":
         form = UploadImageForm(request.POST, request.FILES)
         if form.is_valid():

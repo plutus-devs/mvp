@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from annoying.fields import AutoOneToOneField
 
+
 class Profile(models.Model):
     MALE = 0
     FEMALE = 1

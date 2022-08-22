@@ -22,7 +22,7 @@ def brand_list_view(request):
     # BRANDS
     q = request.GET.get("q")
     filters = Q()
-    if q != None and q != "":
+    if q is not None and q != "":
         for name in q.strip().split():
             filters |= Q(name__icontains=name)
 
@@ -35,7 +35,7 @@ def brand_list_view(request):
             "cover": brand.brandimage_set.order_by("?").first().image.url,
             "is_followed": False
             if not request.user.is_authenticated
-            else brand.users.filter(id=request.user.id).first() != None,
+            else brand.users.filter(id=request.user.id).first() is not None,
         }
         brand_list.append(data)
 
@@ -113,11 +113,10 @@ def brand_feed_view(request, pk):
 
     filters = Q(brand=brand, status=Promotion.APPROVED)
     q = request.GET.get("q", "")
-    if q != None and q != "":
+    if q is not None and q != "":
         for name in q.strip().split():
             filters &= Q(name__icontains=name)
 
-    min_price = request.GET.get("min_price", "")
     min_price = request.GET.get("min_price", "")
     if min_price.replace(".", "", 1).isdigit():
         min_ = float(min_price)
