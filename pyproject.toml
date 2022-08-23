@@ -36,3 +36,9 @@ pre-commit = "^2.20.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[flake8]
+ignore = E203, E266, E501, W503, F403, F401
+max-line-length = 79
+max-complexity = 18
+select = B,C,E,F,W,T4,B9
