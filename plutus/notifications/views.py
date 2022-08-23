@@ -11,16 +11,25 @@ from notifications.models import Notification
 @login_required
 @csrf_exempt
 def notification_list_apiview(request):
-    notification_qs = request.user.notification_set.filter(read=False).order_by("-id").all()
+    notification_qs = (
+        request.user.notification_set.filter(read=False).order_by("-id").all()
+    )
     res_data = {
         "message": {
-            "notifications": [{
-                "pk": noti.id,
-                "title": noti.title,
-                "message": noti.message,
-                "time": timezone.localtime(noti.created_at).strftime("%d/%m/%Y - %H:%M"),
-                "url": reverse("notifications:read_notification", kwargs={"pk": noti.id}),
-            } for noti in notification_qs],
+            "notifications": [
+                {
+                    "pk": noti.id,
+                    "title": noti.title,
+                    "message": noti.message,
+                    "time": timezone.localtime(noti.created_at).strftime(
+                        "%d/%m/%Y - %H:%M"
+                    ),
+                    "url": reverse(
+                        "notifications:read_notification", kwargs={"pk": noti.id}
+                    ),
+                }
+                for noti in notification_qs
+            ],
         }
     }
     return JsonResponse(

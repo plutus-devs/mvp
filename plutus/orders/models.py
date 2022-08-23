@@ -7,7 +7,9 @@ from notifications.models import Notification
 
 
 class Order(models.Model):
-    promotion = models.ForeignKey(Promotion, null=True, blank=True, on_delete=models.SET_NULL)
+    promotion = models.ForeignKey(
+        Promotion, null=True, blank=True, on_delete=models.SET_NULL
+    )
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     product_id = models.CharField(max_length=255)
@@ -62,8 +64,11 @@ class Order(models.Model):
         return {
             "text": text,
             "active": timestamp is not None,
-            "timestamp": "" if timestamp is None else timestamp.astimezone(timezone.get_current_timezone()).strftime(
-                "%b. %d, %H:%M")
+            "timestamp": ""
+            if timestamp is None
+            else timestamp.astimezone(timezone.get_current_timezone()).strftime(
+                "%b. %d, %H:%M"
+            ),
         }
 
     def save(self, *args, **kwargs):

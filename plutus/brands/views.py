@@ -10,6 +10,7 @@ from brands.models import Brand, BrandImage
 from orders.models import Order
 from promotions.models import Category, Promotion
 
+
 def brand_list_view(request):
     template_name = "brands/brand_list.html"
     context = {"title": "BRANDS!"}
@@ -129,12 +130,17 @@ def brand_feed_view(request, pk):
 
     cate_list = request.GET.getlist("cate_list", None)
     if "-1" in cate_list:
-        cate_list = list(map(str, Category.objects.values_list('id', flat=True)))
+        cate_list = list(map(str, Category.objects.values_list("id", flat=True)))
 
     if cate_list:
         filters &= Q(category__in=cate_list)
         num_member = Count("order", filter=Q(order__status__gte=Order.DEPOSIT_PAID))
-        promotion_qs = Promotion.objects.filter(filters).order_by("-created_at").annotate(num_member=num_member).all()
+        promotion_qs = (
+            Promotion.objects.filter(filters)
+            .order_by("-created_at")
+            .annotate(num_member=num_member)
+            .all()
+        )
     else:
         promotion_qs = Promotion.objects.none()
 
@@ -172,4 +178,3 @@ def brand_feed_view(request, pk):
     context["brand"] = brand
 
     return render(request, template_name, context)
-

@@ -4,7 +4,12 @@ from .models import Order
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-        "id", "promotion", "product_name", "user", "full_price", "discount_price",
+        "id",
+        "promotion",
+        "product_name",
+        "user",
+        "full_price",
+        "discount_price",
     )
 
 

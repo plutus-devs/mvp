@@ -11,5 +11,5 @@ class UploadDeposit(forms.Form):
 class UploadImageForm(UploadDeposit):
     address = forms.CharField(
         label="ที่อยู่จัดส่ง",
-        widget=forms.Textarea(attrs={"rows": 3, "class": "form-control"})
+        widget=forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
     )

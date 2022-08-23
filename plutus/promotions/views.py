@@ -286,8 +286,9 @@ def create_promotion_view(request):
 
     elif request.method == "POST":
         form = CreatePromotionForm(request.POST, request.FILES)
-        if (form.is_valid() 
-            and not (form["type"].value() == "0" and form["max_member"].value() == "") \
+        if (
+            form.is_valid()
+            and not (form["type"].value() == "0" and form["max_member"].value() == "")
             and not (form["type"].value() == "1" and form["threshold"].value() == "")
         ):
 
@@ -318,7 +319,7 @@ def create_promotion_view(request):
                         form[field].field.widget.attrs["class"] += " is-valid"
                     except:
                         form[field].field.widget.attrs["class"] += " is-invalid"
-                        
+
                     continue
 
                 if field == "max_member" and form["type"].value() == "0":
@@ -415,7 +416,6 @@ def promotion_detail_view(request, pk):
                 if order.status >= Order.APPROVED:
                     our_total += order.full_price
                     discount_price += order.discount_price
-
 
         context["order_list"] = order_list
         context["total_price"] = f"{total:,}"

@@ -55,18 +55,16 @@ def order_detail_view(request, pk):
 
     context["order"] = {
         "pk": order.id,
-
         "image": order.promotion.image.url,
         "promotion_name": order.promotion.name,
-
         "product_name": order.product_name,
         "product_id": order.product_id,
         "status_text": order.get_status_display(),
         "description": order.description,
-
         "can_see_promotion": order.promotion.status == Promotion.APPROVED,
-        "promotion_url": reverse("promotions:promotion_detail", kwargs={"pk": order.promotion.id}),
-
+        "promotion_url": reverse(
+            "promotions:promotion_detail", kwargs={"pk": order.promotion.id}
+        ),
         "deposit": f"{order.deposit:,}",
         "dept": f"{order.dept:,}",
         "deposit_percent": f"{order.promotion.deposit_percent}",
@@ -74,7 +72,10 @@ def order_detail_view(request, pk):
         "can_pay_full": Order.APPROVED <= order.status <= Order.DEPOSIT_PAID,
         "show_timeline": Order.DEPOSIT_PAID < order.status,
     }
-    context["timeline"] = [order.get_timeline(i) for i in range(Order.DEPOSIT_PAID + 1, Order.COMPLETED + 1, 1)]
+    context["timeline"] = [
+        order.get_timeline(i)
+        for i in range(Order.DEPOSIT_PAID + 1, Order.COMPLETED + 1, 1)
+    ]
     context["title"] = order.product_id
 
     context["form"] = UploadImageForm()
@@ -95,7 +96,9 @@ def upload_deposit_view(request, pk):
             order.deposit_image = form.cleaned_data["image"]
             # order.status = Order.DEPOSIT_PAID
             order.save()
-            messages.add_message(request, messages.SUCCESS, "อัพโหลดรูปภาพเรียบร้อยแล้ว")
+            messages.add_message(
+                request, messages.SUCCESS, "อัพโหลดรูปภาพเรียบร้อยแล้ว"
+            )
             return redirect(request.META.get("HTTP_REFERER", "/"))
         else:
             messages.add_message(request, messages.ERROR, "ไม่สามารถอัพโหลดรูปภาพได้")
@@ -115,7 +118,9 @@ def upload_full_view(request, pk):
             order.address = form.cleaned_data["address"]
             # order.status = Order.COMPLETED_PROCESS
             order.save()
-            messages.add_message(request, messages.SUCCESS, "อัพโหลดรูปภาพเรียบร้อยแล้ว")
+            messages.add_message(
+                request, messages.SUCCESS, "อัพโหลดรูปภาพเรียบร้อยแล้ว"
+            )
             return redirect(request.META.get("HTTP_REFERER", "/"))
         else:
             messages.add_message(request, messages.ERROR, "ไม่สามารถอัพโหลดรูปภาพได้")

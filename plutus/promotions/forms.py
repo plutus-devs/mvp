@@ -13,7 +13,6 @@ class DatalistInput(forms.widgets.Select):
 
 
 class CreatePromotionForm(forms.Form):
-
     def __init__(self, *args, **kwargs):
         super(CreatePromotionForm, self).__init__(*args, **kwargs)
         self.fields["promotion_type"].widget = DatalistInput(

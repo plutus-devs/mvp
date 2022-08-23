@@ -1,6 +1,7 @@
 from django import forms
 from accounts.models import Profile, User
 
+
 class LoginForm(forms.Form):
 
     username = forms.CharField(
@@ -135,7 +136,7 @@ class EditProfileForm(forms.Form):
 
 
 class ChangePasswordForm(forms.Form):
-    
+
     error_messages = {
         "password_mismatch": "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน",
     }

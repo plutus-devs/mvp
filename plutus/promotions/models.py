@@ -26,7 +26,9 @@ class Promotion(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True)
-    promotion_type = models.ForeignKey(PromotionType, on_delete=models.SET_NULL, null=True)
+    promotion_type = models.ForeignKey(
+        PromotionType, on_delete=models.SET_NULL, null=True
+    )
 
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to="promotion_images")

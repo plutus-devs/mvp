@@ -8,7 +8,10 @@ class BrandImageInline(admin.TabularInline):
 
 
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ("id", "name",)
+    list_display = (
+        "id",
+        "name",
+    )
     inlines = [BrandImageInline]
 
 
