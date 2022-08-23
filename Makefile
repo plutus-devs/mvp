@@ -6,3 +6,6 @@ setup_db:
 
 migrate:
 	poetry run python plutus/manage.py migrate
+
+clean:
+	poetry run black plutus
