@@ -1,18 +1,24 @@
 version: "3"
 
 services:
-  mariadb:
+
+  db:
     image: mariadb:latest
     restart: unless-stopped
     volumes:
       - ./mariadb:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 5678
-      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: 1234
       MYSQL_PASSWORD: 1234
       MYSQL_DATABASE: plutus
     ports:
       - "3306:3306"
+    # healthcheck
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost","-u", "root", "-p1234"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
 
   pma:
     image: phpmyadmin
@@ -20,6 +26,17 @@ services:
     ports:
       - "8082:80"
     environment:
-      PMA_USER: root
-      PMA_PASSWORD: 1234
-      PMA_HOST: mariadb
+      PMA_HOST: db
+
+  # For django web app
+  web:
+    build: .
+    command: ["python", "plutus/manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - .:/plutus
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        # Waiting for db to be ready
+        condition: service_healthy
