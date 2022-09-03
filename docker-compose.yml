@@ -25,6 +25,7 @@ services:
   # For django web app
   web:
     build: .
+    # Wait for db to be ready before starting web app
     command: ["./wait-for.sh", "db:3306", "--", "python", "plutus/manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - .:/plutus

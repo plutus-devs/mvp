@@ -22,7 +22,7 @@ RUN pip install -r requirements.txt
 
 RUN apt-get -q update && apt-get -qy install netcat
 
-# chmod +x wait-for.sh file
+# Make wait-for-it.sh executable
 RUN chmod +x ./wait-for.sh
 
 
