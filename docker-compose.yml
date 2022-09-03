@@ -13,12 +13,6 @@ services:
       MYSQL_DATABASE: plutus
     ports:
       - "3306:3306"
-    # healthcheck
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost","-u", "root", "-p1234"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
 
   pma:
     image: phpmyadmin
@@ -31,12 +25,10 @@ services:
   # For django web app
   web:
     build: .
-    command: ["python", "plutus/manage.py", "runserver", "0.0.0.0:8000"]
+    command: ["./wait-for.sh", "db:3306", "--", "python", "plutus/manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - .:/plutus
     ports:
       - "8000:8000"
     depends_on:
-      db:
-        # Waiting for db to be ready
-        condition: service_healthy
+      - db 

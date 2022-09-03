@@ -20,10 +20,10 @@ RUN . venv/bin/activate
 # Install dependencies
 RUN pip install -r requirements.txt
 
-# RUN apt install -y netcat
+RUN apt-get -q update && apt-get -qy install netcat
 
-# # chmod +x wait.sh file
-# RUN chmod +x wait.sh
+# chmod +x wait-for.sh file
+RUN chmod +x ./wait-for.sh
 
 
 
