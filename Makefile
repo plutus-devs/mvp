@@ -1,11 +1,14 @@
+deps:
+	python -m pip install -r requirements.txt
+
 run:
-	poetry run python plutus/manage.py runserver
+	python plutus/manage.py runserver
 
 setup_db:
-	poetry run python plutus/manage.py makemigrations && poetry run python plutus/manage.py migrate
+	python plutus/manage.py makemigrations && python plutus/manage.py migrate
 
 migrate:
-	poetry run python plutus/manage.py migrate
+	python plutus/manage.py migrate
 
 clean:
-	poetry run black plutus
+	black plutus
