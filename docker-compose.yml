@@ -33,4 +33,4 @@ services:
     depends_on:
       - db
     volumes:
-      - .:/plutus
+      - .:/MVP
