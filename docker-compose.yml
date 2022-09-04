@@ -27,8 +27,6 @@ services:
     build: .
     # Wait for db to be ready before starting web app
     command: ["./wait-for.sh", "db:3306", "--", "python", "plutus/manage.py", "runserver", "0.0.0.0:8000"]
-    volumes:
-      - .:/plutus
     ports:
       - "8000:8000"
     depends_on:
