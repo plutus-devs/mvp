@@ -25,5 +25,6 @@ RUN apt-get -q update && apt-get -qy install netcat
 # Make wait-for-it.sh executable
 RUN chmod +x ./wait-for.sh
 
+COPY ./entrypoint.sh /
 
-
+ENTRYPOINT ["sh", "/entrypoint.sh"]
