@@ -2,7 +2,7 @@
 .vscode
 .venv
 
-mvp
+venv
 
 .env
 **/__pycache__
