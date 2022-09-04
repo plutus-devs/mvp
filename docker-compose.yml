@@ -32,4 +32,3 @@ services:
       - .env
     depends_on:
       - db
-    command: ["./wait-for.sh", "db:3306", "--", "python", "plutus/manage.py", "runserver", "0.0.0.0:8000"]
