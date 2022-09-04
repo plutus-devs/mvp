@@ -8,8 +8,8 @@ services:
     volumes:
       - ./mariadb:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
       MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: plutus
     ports:
       - "3306:3306"
@@ -26,8 +26,10 @@ services:
   web:
     build: .
     # Wait for db to be ready before starting web app
-    command: ["./wait-for.sh", "db:3306", "--", "python", "plutus/manage.py", "runserver", "0.0.0.0:8000"]
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     depends_on:
-      - db 
+      - db
+    command: ["./wait-for.sh", "db:3306", "--", "python", "plutus/manage.py", "runserver", "0.0.0.0:8000"]
