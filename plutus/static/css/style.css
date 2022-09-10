@@ -138,6 +138,7 @@
     .timeline .event:after {
         left: -35px;
     }
+
     .timeline .active .event:after {
         left: -35px;
     }
