@@ -69,22 +69,22 @@
 </div>
 
 <!-- header 2 -->
-<div class="border-bottom bg-light">
+<div id="header__2" class="border-bottom bg-light">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center ">
-            <ul class="nav col-12 justify-content-center pt-1">
-                <li>
-                    <a href="{% url 'promotions:all_deals' %}" class="btn btn-outline-dark mb-1 {% if title == 'ALL DEALS!' %}active{% endif %}">
-                        <i class="bi bi-cart-fill"></i><span style="font-size: 0.8rem;">&nbsp;All Deals</span>
+            <ul class="nav col-12 justify-content-center pt-1 nav__btn">
+                <li class="nav__btn__list">
+                    <a href="{% url 'promotions:all_deals' %}" class="btn btn-outline-dark mb-1 {% if title == 'ALL DEALS!' %}active__btn{% endif %}">
+                        <i class="bi bi-cart-fill"></i><span class="nav__btn__text">&nbsp;All Deals</span>
                     </a>
-                    <a href="{% url 'promotions:flash_deals' %}" class="btn btn-outline-dark mb-1 {% if title == 'FLASH DEALS!' %}active{% endif %}">
-                        <i class="bi bi-lightning-fill"></i><span style="font-size: 0.8rem;">&nbsp;Flash Deals</span>
+                    <a href="{% url 'promotions:flash_deals' %}" class="btn btn-outline-dark mb-1 {% if title == 'FLASH DEALS!' %}active__btn{% endif %}">
+                        <i class="bi bi-lightning-fill"></i><span class="nav__btn__text">&nbsp;Flash Deals</span>
                     </a>
-                    <a href="{% url 'brands:brand_list' %}" class="btn btn-outline-dark mb-1 {% if title == 'BRANDS!' %}active{% endif %}">
-                        <i class="bi bi-bag-fill"></i><span style="font-size: 0.8rem;">&nbsp;Brands</span>
+                    <a href="{% url 'brands:brand_list' %}" class="btn btn-outline-dark mb-1 {% if title == 'BRANDS!' %}active__btn{% endif %}">
+                        <i class="bi bi-bag-fill"></i><span class="nav__btn__text">&nbsp;Brands</span>
                     </a>
-                    <a href="{% url 'promotions:category_list' %}" class="btn btn-outline-dark mb-1 {% if title == 'CATEGORIES' %}active{% endif %}">
-                        <i class="bi bi-bag-fill"></i><span style="font-size: 0.8rem;">&nbsp;Categories</span>
+                    <a href="{% url 'promotions:category_list' %}" class="btn btn-outline-dark mb-1 {% if title == 'CATEGORIES' %}active__btn{% endif %}">
+                        <i class="bi bi-bag-fill"></i><span class="nav__btn__text">&nbsp;Categories</span>
                     </a>
                 </li>
             </ul>
