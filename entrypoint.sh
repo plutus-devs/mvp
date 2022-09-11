@@ -4,6 +4,9 @@ DJANGO_SUPERUSER_PASSWORD=$SUPER_USER_PASSWORD python plutus/manage.py createsup
 
 if [ "$ENVIRONMENT" = "production" ]; then
     ./wait-for.sh db:3306 -- make run-prod
-else
+elif [ "$ENVIRONMENT" = "development" ]; then
     ./wait-for.sh db:3306 -- make run-dev
+else
+    echo "Invalid environment"
+    exit 1
 fi
