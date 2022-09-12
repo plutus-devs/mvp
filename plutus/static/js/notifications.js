@@ -4,7 +4,6 @@ const notificationURL = "/notifications/get_notifications/";
 
 
 function get_notifications() {
-    console.log("CALL");
     notiListDiv.innerHTML = ""
     numNotiSpan.innerHTML = ""
     var url_params = "/notifications/get_notifications/"
@@ -28,7 +27,7 @@ function get_notifications() {
                             <p class="card-text">
                                 ${noti.message}
                             </p>
-                            
+
                             <a href="${noti.url}" class="stretched-link" style="color: inherit;text-decoration: inherit;">${noti.time}</a>
                         </div>
                     </div>
@@ -38,10 +37,9 @@ function get_notifications() {
             } else {
                 numNotiSpan.style.display = "none";
                 notiListDiv.innerHTML += "<div class='text-center'>ไม่พบข้อมูล</div>";
-                console.log("NODATA")
             }
-            
-            
+
+
         })
 };
 
