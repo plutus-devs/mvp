@@ -31,3 +31,4 @@ toml==0.10.2
 tomli==2.0.1
 typing-extensions==4.1.1
 virtualenv==20.16.3
+whitenoise==6.2.0
